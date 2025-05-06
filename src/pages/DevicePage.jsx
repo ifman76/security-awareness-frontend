@@ -22,6 +22,7 @@ export default function DevicePage() {
       .then(res => res.json())
       .then(data => {
         const deviceQuestions = data.filter(q => q.section === 'Device');
+        console.log('✅ Device 문항 전체 수:', deviceQuestions.length);
 
         const grouped = {
           GPT_Low: [], GPT_Medium: [], GPT_High: [],
@@ -43,6 +44,11 @@ export default function DevicePage() {
           ...getRandom(grouped.Human_Medium, 2),
           ...getRandom(grouped.Human_High, 1)
         ];
+
+        console.log('✅ 최종 선택된 Device 문항 수:', selected.length);
+        selected.forEach((q, i) => {
+          console.log(`Q${i + 1}: ${q.difficulty} ${q.source} - ${q.question}`);
+        });
 
         setQuestions(selected);
         setAnswers(Array(selected.length).fill(null));
