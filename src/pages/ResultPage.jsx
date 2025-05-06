@@ -1,30 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  calculateKnowledgeScore,
-  calculateDeviceScore,
-  calculateBehaviorScore,
-  calculateFinalScore,
-} from '../utils/scoring';
-import { Radar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-} from 'chart.js';
-
-ChartJS.register(
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-);
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 export default function ResultPage() {
   const location = useLocation();
@@ -33,68 +9,101 @@ export default function ResultPage() {
     knowledgeQuestions,
     deviceAnswers,
     deviceQuestions,
+    ownedDevices,
+    certifiedDevices,
     behaviorAnswers,
-    behaviorQuestions,
-    participantInfo,
+    behaviorQuestions
   } = location.state || {};
 
-  const knowledge = calculateKnowledgeScore(knowledgeAnswers, knowledgeQuestions);
-  const device = calculateDeviceScore(deviceAnswers, deviceQuestions);
-  const behavior = calculateBehaviorScore(behaviorAnswers, behaviorQuestions);
-  const finalScore = calculateFinalScore(knowledge, device, behavior);
+  // -------------------------
+  // Knowledge 점수 계산
+  // -------------------------
+  const difficultyWeight = { Low: 1, Medium: 2, High: 3 };
 
-  const chartData = {
-    labels: ['Knowledge', 'Device', 'Behavior / Curiosity'],
-    datasets: [
-      {
-        label: 'Security Awareness Score',
-        data: [knowledge, device, behavior],
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 2,
-      },
-    ],
-  };
+  let knowledgeScore = 0;
+  let knowledgeMax = 0;
 
-  const chartOptions = {
-    scales: {
-      r: {
-        beginAtZero: true,
-        max: 100,
-        ticks: {
-          stepSize: 20,
-        },
-        pointLabels: {
-          font: {
-            size: 14,
-          },
-        },
-      },
-    },
-  };
+  knowledgeQuestions?.forEach((q, idx) => {
+    const weight = difficultyWeight[q.difficulty] || 1;
+    knowledgeMax += weight;
+    if (q.answer_index === (knowledgeAnswers[idx] + 1)) {
+      knowledgeScore += weight;
+    }
+  });
+
+  // -------------------------
+  // Device 점수 계산
+  // -------------------------
+  let deviceScore = 0;
+  let deviceMax = 0;
+
+  deviceQuestions?.forEach((q, idx) => {
+    const weight = difficultyWeight[q.difficulty] || 1;
+    deviceMax += weight;
+    if (q.answer_index === (deviceAnswers[idx] + 1)) {
+      deviceScore += weight;
+    }
+  });
+
+  const certifiedOwned = ownedDevices?.filter(productName =>
+    certifiedDevices?.some(d => d.product === productName && d.cc_certified === true)
+  ) || [];
+
+  const deviceBonus = certifiedOwned.length >= 2 ? 4 : (certifiedOwned.length >= 1 ? 2 : 0);
+
+  const totalDeviceScore = ((deviceScore + deviceBonus) / (deviceMax + 4)) * 100;
+
+  // -------------------------
+  // Behavior 점수 계산 (단순 평균)
+  // -------------------------
+  const behaviorScore = behaviorAnswers?.reduce((sum, val) => sum + (val + 1), 0) || 0;
+  const behaviorMax = (behaviorAnswers?.length || 0) * 5;
+  const behaviorPercent = behaviorMax ? (behaviorScore / behaviorMax) * 100 : 0;
+
+  const chartData = [
+    { name: 'Knowledge', score: ((knowledgeScore / knowledgeMax) * 100).toFixed(1) },
+    { name: 'Device', score: totalDeviceScore.toFixed(1) },
+    { name: 'Behavior', score: behaviorPercent.toFixed(1) },
+  ];
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">결과 요약 / Final Summary</h2>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">보안 인식 결과 / Security Awareness Result</h1>
 
-      <Radar data={chartData} options={chartOptions} className="mb-6" />
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis domain={[0, 100]} />
+          <Tooltip formatter={(value) => `${value}%`} />
+          <Bar dataKey="score" fill="#3182CE" />
+        </BarChart>
+      </ResponsiveContainer>
 
-      <ul className="mb-6 space-y-2 text-lg">
-        <li><strong>Knowledge:</strong> {knowledge.toFixed(1)} / 100</li>
-        <li><strong>Device:</strong> {device.toFixed(1)} / 100</li>
-        <li><strong>Behavior / Curiosity:</strong> {behavior.toFixed(1)} / 100</li>
-        <li className="font-bold text-xl mt-2">Total Score: {finalScore.toFixed(1)} / 100</li>
-      </ul>
+      <div className="mt-6 space-y-6">
+        <div>
+          <h2 className="text-xl font-semibold">📘 지식 영역 (Knowledge)</h2>
+          <p>정답 점수: {knowledgeScore} / {knowledgeMax}</p>
+          <p>정답률: {((knowledgeScore / knowledgeMax) * 100).toFixed(1)}%</p>
+        </div>
 
-      <h3 className="text-xl font-semibold mb-2">참여자 정보 / Participant Info</h3>
-      <ul className="space-y-1 text-base">
-        <li><strong>연령대 / Age Group:</strong> {participantInfo?.ageGroup}</li>
-        <li><strong>성별 / Gender:</strong> {participantInfo?.gender}</li>
-        <li><strong>직업군 / Occupation:</strong> {participantInfo?.occupation}</li>
-        <li><strong>생성형 AI 사용 경험 / AI Experience:</strong> {participantInfo?.aiExperience === 'yes' ? 'Yes / 예' : 'No / 아니오'}</li>
-        <li><strong>보안 자기평가 (1~5) / Self-rated Security Awareness:</strong> {participantInfo?.selfAssessment}</li>
-      </ul>
+        <div>
+          <h2 className="text-xl font-semibold">💻 기기 영역 (Device)</h2>
+          <p>문제 점수: {deviceScore} / {deviceMax}</p>
+          <p>보유 인증 기기 수: {certifiedOwned.length}개 (가산점: {deviceBonus}점)</p>
+          <p>최종 Device 점수: {totalDeviceScore.toFixed(1)}%</p>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold">🧠 행동/호기심 영역 (Behavior/Curiosity)</h2>
+          <p>응답 합계: {behaviorScore} / {behaviorMax}</p>
+          <p>점수율: {behaviorPercent.toFixed(1)}%</p>
+        </div>
+      </div>
+
+      <div className="mt-6 text-lg font-bold">
+        총합 기반의 개별 분석은 추후 제공 예정입니다.
+      </div>
     </div>
   );
 }
