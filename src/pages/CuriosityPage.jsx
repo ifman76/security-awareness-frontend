@@ -13,54 +13,23 @@ export default function CuriosityPage() {
   const deviceQuestions = location.state?.deviceQuestions;
 
   useEffect(() => {
-  fetch('https://security-awareness-api.onrender.com/questions')
-    .then((res) => res.json())
-    .then((data) => {
-      const sectionSet = new Set(data.map(q => q.section));
-      console.log("전체 사용된 section 목록:", [...sectionSet]);
+    fetch('https://security-awareness-api.onrender.com/questions')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("전체 수신된 문항 수:", data.length);
 
-      console.log("전체 수신된 문항 수:", data.length);
+        const filtered = data.filter(q => q.section === 'Behavior/Curiosity');
+        console.log("Behavior/Curiosity 문항 수:", filtered.length);
 
-      const filtered = data.filter(q => q.section === 'Behavior/Curiosity');
-      console.log("Behavior/Curiocity 문항 수:", filtered.length);
+        const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
+        const selected = getRandom(filtered, 6);
 
-      filtered.forEach(q => {
-        console.log(`[${q.source}_${q.difficulty}] ${q.question}`);
-      });
-
-      const grouped = {
-        GPT_Low: [],
-        GPT_Medium: [],
-        GPT_High: [],
-        Human_Low: [],
-        Human_Medium: [],
-        Human_High: []
-      };
-
-      filtered.forEach(q => {
-        const key = `${q.source}_${q.difficulty}`;
-        if (grouped[key]) grouped[key].push(q);
-      });
-
-      const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
-
-      const selected = [
-        ...getRandom(grouped.GPT_Low, 1),
-        ...getRandom(grouped.GPT_Medium, 1),
-        ...getRandom(grouped.GPT_High, 1),
-        ...getRandom(grouped.Human_Low, 1),
-        ...getRandom(grouped.Human_Medium, 1),
-        ...getRandom(grouped.Human_High, 1),
-      ];
-
-      console.log("선택된 최종 문항 수:", selected.length);
-
-      setQuestions(selected);
-      setAnswers(Array(selected.length).fill(null));
-    })
-    .catch((err) => console.error("문항 불러오기 실패:", err));
-}, []);
-
+        console.log("최종 선택된 문항 수:", selected.length);
+        setQuestions(selected);
+        setAnswers(Array(selected.length).fill(null));
+      })
+      .catch((err) => console.error("문항 불러오기 실패:", err));
+  }, []);
 
   const handleSelect = (questionIndex, choiceIndex) => {
     const updatedAnswers = [...answers];
@@ -69,7 +38,7 @@ export default function CuriosityPage() {
 
     const q = questions[questionIndex];
 
-    // 자동 보기 생성 대응
+    // 보기 항목 결정
     let choices = [];
     if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
       choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
@@ -106,7 +75,11 @@ export default function CuriosityPage() {
   };
 
   if (questions.length === 0) {
-    return <div className="p-6">문항을 불러오는 중입니다...</div>;
+    return (
+      <div className="p-6">
+        문항을 불러오는 중입니다...
+      </div>
+    );
   }
 
   return (
