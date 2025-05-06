@@ -12,54 +12,52 @@ export default function CuriosityPage() {
   const deviceAnswers = location.state?.deviceAnswers;
   const deviceQuestions = location.state?.deviceQuestions;
 
-  useEffect(() => { 
-    fetch('https://security-awareness-api.onrender.com/questions')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("전체 수신된 문항 수:", data.length);
+  useEffect(() => {
+  fetch('https://security-awareness-api.onrender.com/questions')
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("전체 수신된 문항 수:", data.length);
 
-        const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
-        console.log("Behavior/Curiocity 문항 수:", filtered.length);
-    
-        filtered.forEach(q => {
-          console.log(`[${q.source}_${q.difficulty}] ${q.question}`);
-        });
-        console.log("선택된 최종 문항 수:", selected.length);
+      const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
+      console.log("Behavior/Curiocity 문항 수:", filtered.length);
 
+      filtered.forEach(q => {
+        console.log(`[${q.source}_${q.difficulty}] ${q.question}`);
+      });
 
-        
-        const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
+      const grouped = {
+        GPT_Low: [],
+        GPT_Medium: [],
+        GPT_High: [],
+        Human_Low: [],
+        Human_Medium: [],
+        Human_High: []
+      };
 
-        const grouped = {
-          GPT_Low: [],
-          GPT_Medium: [],
-          GPT_High: [],
-          Human_Low: [],
-          Human_Medium: [],
-          Human_High: []
-        };
+      filtered.forEach(q => {
+        const key = `${q.source}_${q.difficulty}`;
+        if (grouped[key]) grouped[key].push(q);
+      });
 
-        filtered.forEach(q => {
-          const key = `${q.source}_${q.difficulty}`;
-          if (grouped[key]) grouped[key].push(q);
-        });
+      const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
 
-        const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
+      const selected = [
+        ...getRandom(grouped.GPT_Low, 1),
+        ...getRandom(grouped.GPT_Medium, 1),
+        ...getRandom(grouped.GPT_High, 1),
+        ...getRandom(grouped.Human_Low, 1),
+        ...getRandom(grouped.Human_Medium, 1),
+        ...getRandom(grouped.Human_High, 1),
+      ];
 
-        const selected = [
-          ...getRandom(grouped.GPT_Low, 1),
-          ...getRandom(grouped.GPT_Medium, 1),
-          ...getRandom(grouped.GPT_High, 1),
-          ...getRandom(grouped.Human_Low, 1),
-          ...getRandom(grouped.Human_Medium, 1),
-          ...getRandom(grouped.Human_High, 1),
-        ];
+      console.log("선택된 최종 문항 수:", selected.length);
 
-        setQuestions(selected);
-        setAnswers(Array(selected.length).fill(null));
-      })
-      .catch((err) => console.error("문항 불러오기 실패:", err));
-  }, []);
+      setQuestions(selected);
+      setAnswers(Array(selected.length).fill(null));
+    })
+    .catch((err) => console.error("문항 불러오기 실패:", err));
+}, []);
+
 
   const handleSelect = (questionIndex, choiceIndex) => {
     const updatedAnswers = [...answers];
