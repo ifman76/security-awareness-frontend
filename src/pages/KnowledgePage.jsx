@@ -12,7 +12,6 @@ export default function KnowledgePage() {
       .then((data) => {
         const knowledgeQuestions = data.filter(q => q.section === 'Knowledge');
 
-        // 출처와 난이도 조합에 따라 랜덤하게 골라냄 (기존 로직 반영)
         const grouped = {
           GPT_Low: [],
           GPT_Medium: [],
@@ -49,15 +48,23 @@ export default function KnowledgePage() {
     updatedAnswers[questionIndex] = choiceIndex;
     setAnswers(updatedAnswers);
 
-    // 응답 서버에 저장
     const q = questions[questionIndex];
-    const choiceText = q[`choice${choiceIndex + 1}`];
+
+    // ✅ 보기 항목 추출 (객관식 or O/X)
+    let choices = [];
+    if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+      choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+    } else if (q.type === 'O/X') {
+      choices = ['O', 'X'];
+    }
+
+    const choiceText = choices[choiceIndex];
 
     fetch("https://security-awareness-api.onrender.com/responses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participant_id: "user001", // 추후 UUID로 대체
+        participant_id: "user001",
         section: q.section,
         question: q.question,
         answer: choiceText,
@@ -82,12 +89,25 @@ export default function KnowledgePage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Knowledge Questions</h1>
-      {questions.map((q, idx) => (
-        <div key={idx} className="mb-4">
-          <p className="font-semibold mb-2">{idx + 1}. {q.question}</p>
-          <ul className="space-y-1">
-            {[q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].map((choice, cidx) => (
-              choice ? (
+      {questions.map((q, idx) => {
+        // ✅ choice 생성 (객관식 or O/X)
+        let choices = [];
+        if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+          choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+        } else if (q.type === 'O/X') {
+          choices = ['O', 'X'];
+        }
+
+        if (!choices.length) {
+          console.warn(`⚠️ ${idx + 1}번 문항 보기 없음. 렌더링 생략`, q);
+          return null;
+        }
+
+        return (
+          <div key={idx} className="mb-4">
+            <p className="font-semibold mb-2">{idx + 1}. {q.question}</p>
+            <ul className="space-y-1">
+              {choices.map((choice, cidx) => (
                 <li key={cidx}>
                   <label className="cursor-pointer">
                     <input
@@ -101,11 +121,11 @@ export default function KnowledgePage() {
                     {choice}
                   </label>
                 </li>
-              ) : null
-            ))}
-          </ul>
-        </div>
-      ))}
+              ))}
+            </ul>
+          </div>
+        );
+      })}
       <button
         onClick={handleNext}
         disabled={answers.includes(null)}
