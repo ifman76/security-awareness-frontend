@@ -21,7 +21,7 @@ export default function CuriosityPage() {
 
       console.log("전체 수신된 문항 수:", data.length);
 
-      const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
+      const filtered = data.filter(q => q.section === 'Behavior/Curiosity');
       console.log("Behavior/Curiocity 문항 수:", filtered.length);
 
       filtered.forEach(q => {
