@@ -38,6 +38,7 @@ export default function KnowledgePage() {
           ...getRandom(grouped.Human_High, 1),
         ];
 
+        console.log("선택된 질문:", selected[0]);
         setQuestions(selected);
         setAnswers(Array(selected.length).fill(null));
       })
