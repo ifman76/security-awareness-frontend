@@ -13,6 +13,18 @@ export default function CuriosityPage() {
   const deviceQuestions = location.state?.deviceQuestions;
 
   useEffect(() => {
+    console.log("전체 수신된 문항 수:", data.length);
+
+    const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
+    console.log("Behavior/Curiocity 문항 수:", filtered.length);
+
+    filtered.forEach(q => {
+      console.log(`[${q.source}_${q.difficulty}] ${q.question}`);
+    });
+    console.log("선택된 최종 문항 수:", selected.length);
+
+
+    
     fetch('https://security-awareness-api.onrender.com/questions')
       .then((res) => res.json())
       .then((data) => {
