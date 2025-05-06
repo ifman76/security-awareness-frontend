@@ -16,6 +16,9 @@ export default function CuriosityPage() {
   fetch('https://security-awareness-api.onrender.com/questions')
     .then((res) => res.json())
     .then((data) => {
+      const sectionSet = new Set(data.map(q => q.section));
+      console.log("전체 사용된 section 목록:", [...sectionSet]);
+
       console.log("전체 수신된 문항 수:", data.length);
 
       const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
