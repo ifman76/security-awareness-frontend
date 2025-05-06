@@ -14,19 +14,6 @@ export default function CuriosityPage() {
 
   useEffect(() => {
     fetch('https://security-awareness-api.onrender.com/questions')
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("전체 수신된 데이터:", data);  // 전체 응답 확인
-
-      const curiosityQuestions = data.filter(q => q.section === 'Curiosity');
-      console.log("필터링된 호기심 문항:", curiosityQuestions);  // 필터 결과 확인
-
-      setQuestions(curiosityQuestions);
-      setAnswers(Array(curiosityQuestions.length).fill(null));
-    })
-    .catch((err) => console.error("문항 불러오기 실패:", err));  // fetch 실패시 로그
-    
-    fetch('https://security-awareness-api.onrender.com/questions')
       .then((res) => res.json())
       .then((data) => {
         const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
@@ -68,7 +55,16 @@ export default function CuriosityPage() {
     setAnswers(updatedAnswers);
 
     const q = questions[questionIndex];
-    const choiceText = q[`choice${choiceIndex + 1}`];
+
+    // 자동 보기 생성 대응
+    let choices = [];
+    if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+      choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+    } else if (q.type === 'O/X') {
+      choices = ['O', 'X'];
+    }
+
+    const choiceText = choices[choiceIndex];
 
     fetch("https://security-awareness-api.onrender.com/responses", {
       method: "POST",
@@ -103,12 +99,24 @@ export default function CuriosityPage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Behavior / Curiosity Questions</h1>
-      {questions.map((q, idx) => (
-        <div key={idx} className="mb-4">
-          <p className="font-semibold mb-2">{idx + 1}. {q.question}</p>
-          <ul className="space-y-1">
-            {[q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].map((choice, cidx) => (
-              choice ? (
+      {questions.map((q, idx) => {
+        let choices = [];
+        if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+          choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+        } else if (q.type === 'O/X') {
+          choices = ['O', 'X'];
+        }
+
+        if (!choices.length) {
+          console.warn(`⚠️ ${idx + 1}번 문항 보기 없음. 렌더링 생략`, q);
+          return null;
+        }
+
+        return (
+          <div key={idx} className="mb-4">
+            <p className="font-semibold mb-2">{idx + 1}. {q.question}</p>
+            <ul className="space-y-1">
+              {choices.map((choice, cidx) => (
                 <li key={cidx}>
                   <label className="cursor-pointer">
                     <input
@@ -122,11 +130,11 @@ export default function CuriosityPage() {
                     {choice}
                   </label>
                 </li>
-              ) : null
-            ))}
-          </ul>
-        </div>
-      ))}
+              ))}
+            </ul>
+          </div>
+        );
+      })}
       <button
         onClick={handleNext}
         disabled={answers.includes(null)}
