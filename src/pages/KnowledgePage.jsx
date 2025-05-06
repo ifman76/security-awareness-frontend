@@ -12,7 +12,6 @@ export default function KnowledgePage() {
       .then((data) => {
         const knowledgeQuestions = data.filter(q => q.section === 'Knowledge');
 
-        // 출처와 난이도 조합에 따라 랜덤하게 골라냄
         const grouped = {
           GPT_Low: [],
           GPT_Medium: [],
@@ -50,7 +49,16 @@ export default function KnowledgePage() {
     setAnswers(updatedAnswers);
 
     const q = questions[questionIndex];
-    const choiceText = q[`choice${choiceIndex + 1}`];
+
+    // ✅ 보기 항목 추출 (객관식 or O/X)
+    let choices = [];
+    if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+      choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+    } else if (q.type === 'O/X') {
+      choices = ['O', 'X'];
+    }
+
+    const choiceText = choices[choiceIndex];
 
     fetch("https://security-awareness-api.onrender.com/responses", {
       method: "POST",
@@ -82,8 +90,13 @@ export default function KnowledgePage() {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Knowledge Questions</h1>
       {questions.map((q, idx) => {
-        const rawChoices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5];
-        const choices = rawChoices.filter(Boolean);
+        // ✅ choice 생성 (객관식 or O/X)
+        let choices = [];
+        if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+          choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+        } else if (q.type === 'O/X') {
+          choices = ['O', 'X'];
+        }
 
         if (!choices.length) {
           console.warn(`⚠️ ${idx + 1}번 문항 보기 없음. 렌더링 생략`, q);
