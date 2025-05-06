@@ -28,7 +28,7 @@ export default function KnowledgePage() {
         });
 
         const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
-
+        
         const selected = [
           ...getRandom(grouped.GPT_Low, 1),
           ...getRandom(grouped.GPT_Medium, 2),
@@ -39,6 +39,9 @@ export default function KnowledgePage() {
         ];
 
         console.log("선택된 질문:", selected[0]);
+        console.log("렌더링 중: 질문 0번 보기들:", questions[0]?.choice1, questions[0]?.choice2);
+
+        
         setQuestions(selected);
         setAnswers(Array(selected.length).fill(null));
       })
