@@ -14,6 +14,19 @@ export default function CuriosityPage() {
 
   useEffect(() => {
     fetch('https://security-awareness-api.onrender.com/questions')
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("전체 수신된 데이터:", data);  // 전체 응답 확인
+
+      const curiosityQuestions = data.filter(q => q.section === 'Curiosity');
+      console.log("필터링된 호기심 문항:", curiosityQuestions);  // 필터 결과 확인
+
+      setQuestions(curiosityQuestions);
+      setAnswers(Array(curiosityQuestions.length).fill(null));
+    })
+    .catch((err) => console.error("문항 불러오기 실패:", err));  // fetch 실패시 로그
+    
+    fetch('https://security-awareness-api.onrender.com/questions')
       .then((res) => res.json())
       .then((data) => {
         const filtered = data.filter(q => q.section === 'Behavior/Curiocity');
