@@ -22,8 +22,30 @@ export default function DevicePage() {
       .then(res => res.json())
       .then(data => {
         const deviceQuestions = data.filter(q => q.section === 'Device');
-        setQuestions(deviceQuestions);
-        setAnswers(Array(deviceQuestions.length).fill(null));
+
+        const grouped = {
+          GPT_Low: [], GPT_Medium: [], GPT_High: [],
+          Human_Low: [], Human_Medium: [], Human_High: []
+        };
+
+        deviceQuestions.forEach(q => {
+          const key = `${q.source}_${q.difficulty}`;
+          if (grouped[key]) grouped[key].push(q);
+        });
+
+        const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
+
+        const selected = [
+          ...getRandom(grouped.GPT_Low, 1),
+          ...getRandom(grouped.GPT_Medium, 2),
+          ...getRandom(grouped.GPT_High, 1),
+          ...getRandom(grouped.Human_Low, 1),
+          ...getRandom(grouped.Human_Medium, 2),
+          ...getRandom(grouped.Human_High, 1)
+        ];
+
+        setQuestions(selected);
+        setAnswers(Array(selected.length).fill(null));
       })
       .catch(err => console.error("문항 로딩 실패", err));
 
