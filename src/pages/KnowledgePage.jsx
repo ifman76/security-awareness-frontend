@@ -47,7 +47,7 @@ export default function KnowledgePage() {
     });
   };
 
-  if (questions.length === 0) {
+  if (questions.length === 0 || !questions[0] || questions[0].choice1 == null) {  
     return <div className="p-6">문항을 불러오는 중입니다...(최초 접속시 10초 정도 소요될 수 있습니다)</div>;
   }
   console.log("불러온 questions:", questions);
