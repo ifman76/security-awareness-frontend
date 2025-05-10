@@ -4,12 +4,17 @@ import QuestionCard from './QuestionCard';
 
 export default function KnowledgePage() {
   const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ 로딩 상태 추가
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("📌 useEffect 실행됨");
+
     fetch('https://security-awareness-api.onrender.com/questions')
       .then((res) => res.json())
       .then((data) => {
+        console.log("📌 전체 질문 데이터:", data);
+
         const knowledgeQuestions = data.filter(q => q.section === 'Knowledge');
 
         const grouped = {
@@ -33,9 +38,14 @@ export default function KnowledgePage() {
           ...getRandom(grouped.Human_High, 1),
         ];
 
+        console.log("✅ 선택된 질문:", selected);
         setQuestions(selected);
+        setLoading(false); // ✅ 모든 작업 완료 후 로딩 종료
       })
-      .catch((err) => console.error("질문 불러오기 실패:", err));
+      .catch((err) => {
+        console.error("❌ 질문 불러오기 실패:", err);
+        setLoading(false); // 실패해도 false 처리해서 루프 방지
+      });
   }, []);
 
   const handleSubmit = (answers) => {
@@ -47,10 +57,10 @@ export default function KnowledgePage() {
     });
   };
 
-  if (questions.length === 0 || !questions[0] || questions[0].choice1 == null) {  
-    return <div className="p-6">문항을 불러오는 중입니다...(최초 접속시 10초 정도 소요될 수 있습니다)</div>;
+  if (loading) {
+    return <div className="p-6">문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)</div>;
   }
-  console.log("불러온 questions:", questions);
+
   return (
     <QuestionCard questions={questions} onSubmit={handleSubmit} />
   );
