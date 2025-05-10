@@ -11,6 +11,7 @@ export default function QuestionCard({ questions, onSubmit }) {
 
     // 응답 서버에 저장
     const q = questions[current];
+    console.log("현재 질문 객체", q);
     const choiceText = q[`choice${choiceIndex + 1}`];
 
     fetch("https://security-awareness-api.onrender.com/responses", {
