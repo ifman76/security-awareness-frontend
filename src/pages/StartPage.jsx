@@ -9,6 +9,8 @@ export default function StartPage() {
   };
 
   return (
+    <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-red-500">
+
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
       <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 text-center">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2 leading-snug">
