@@ -17,9 +17,9 @@ export default function ResultPage() {
 
   const difficultyWeight = { Low: 1, Medium: 2, High: 3 };
 
-  // Knowledge 점수
   let knowledgeScore = 0;
   let knowledgeMax = 0;
+
   knowledgeQuestions?.forEach((q, idx) => {
     const weight = difficultyWeight[q.difficulty] || 1;
     knowledgeMax += weight;
@@ -28,9 +28,9 @@ export default function ResultPage() {
     }
   });
 
-  // Device 점수 + 가산점
   let deviceScore = 0;
   let deviceMax = 0;
+
   deviceQuestions?.forEach((q, idx) => {
     const weight = difficultyWeight[q.difficulty] || 1;
     deviceMax += weight;
@@ -42,10 +42,10 @@ export default function ResultPage() {
   const certifiedOwned = ownedDevices?.filter(productName =>
     certifiedDevices?.some(d => d.product === productName && d.cc_certified === true)
   ) || [];
+
   const deviceBonus = certifiedOwned.length >= 2 ? 4 : (certifiedOwned.length >= 1 ? 2 : 0);
   const totalDeviceScore = ((deviceScore + deviceBonus) / (deviceMax + 4)) * 100;
 
-  // Behavior 점수
   const behaviorScore = behaviorAnswers?.reduce((sum, val) => sum + (val + 1), 0) || 0;
   const behaviorMax = (behaviorAnswers?.length || 0) * 5;
   const behaviorPercent = behaviorMax ? (behaviorScore / behaviorMax) * 100 : 0;
