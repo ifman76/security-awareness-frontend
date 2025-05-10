@@ -19,7 +19,16 @@ export default function StartPage() {
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-gray-700 mb-6">
           이 실험은 생성형 AI 시대의 보안 인식 수준을 평가하기 위한 것입니다.
+          <br />
+          <span className="text-sm text-gray-500">
+            This experiment aims to assess your security awareness in the era of Generative AI.
+          </span>
+          <br />
           총 3개의 영역(지식, 기기, 행동/호기심)을 측정합니다.
+          <br />
+          <span className="text-sm text-gray-500">
+            It evaluates three key areas: Knowledge, Device Ownership, and Curiosity/Behavior.
+          </span>
         </p>
         <button
           onClick={handleStart}
