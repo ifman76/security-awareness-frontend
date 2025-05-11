@@ -68,7 +68,7 @@ export default function QuestionCard({ questions, onSubmit }) {
         ></div>
       </div>
 
-      <div className="bg-white shadow-xl rounded-2xl p-6 transition-all">
+      <div className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-6 transition-all">
         <div className="text-xs text-gray-500 mb-2">
           Q {current + 1} / {questions.length}
         </div>
