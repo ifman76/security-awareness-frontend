@@ -30,6 +30,17 @@ export default function ResultPage() {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
+      <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-2">총점 / Total Score</h2>
+        <p className="text-3xl font-bold text-orange-600">{Math.round((knowledgeScore + deviceScore + behaviorScore) / 3)}점 / {Math.round((knowledgeScore + deviceScore + behaviorScore) / 3)} points</p>
+      </div>
+
+      <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-2">그래프 / Radar Chart</h2>
+        <div className="mt-4">
+          <img src="https://quickchart.io/chart?c={type:'radar',data:{labels:['Knowledge','Device','Curiosity'],datasets:[{label:'Score',data:[" + knowledgeScore + "," + deviceScore + "," + behaviorScore + "]}]}}" alt="Security Awareness Radar Chart" className="w-full rounded-lg" />
+        </div>
+      </div>
       <h1 className="text-2xl font-bold mb-6 text-center">보안 인식 결과 / Security Awareness Result</h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
