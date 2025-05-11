@@ -6,6 +6,9 @@ export default function DevicePage() {
   const [questions, setQuestions] = useState([]);
   const [devices, setDevices] = useState([]);
   const [ownedDevices, setOwnedDevices] = useState([]);
+  const [deviceAnswers, setDeviceAnswers] = useState([]);
+  const [surveyDone, setSurveyDone] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedMaker, setSelectedMaker] = useState('');
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -53,12 +56,17 @@ export default function DevicePage() {
       .catch(err => console.error("기기 데이터 로딩 실패", err));
   }, []);
 
-  const handleSubmit = (answers) => {
+  const handleSurveyComplete = (answers) => {
+    setDeviceAnswers(answers);
+    setSurveyDone(true);
+  };
+
+  const handleFinalSubmit = () => {
     navigate('/curiosity', {
       state: {
         knowledgeAnswers,
         knowledgeQuestions,
-        deviceAnswers: answers,
+        deviceAnswers,
         deviceQuestions: questions,
         ownedDevices,
         certifiedDevices: devices,
@@ -73,70 +81,91 @@ export default function DevicePage() {
 
   return (
     <div className="p-6">
-      {questions.length === 0 ? (
-        <div>문항을 불러오는 중입니다...</div>
+      {!surveyDone ? (
+        questions.length === 0 ? (
+          <div>문항을 불러오는 중입니다...</div>
+        ) : (
+          <QuestionCard questions={questions} onSubmit={handleSurveyComplete} />
+        )
       ) : (
-        <QuestionCard questions={questions} onSubmit={handleSubmit} />
-      )}
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-4">보유 기기 선택</h2>
 
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-2">보유 기기 선택</h2>
-
-        <div className="mb-2">
-          <label className="block mb-1">카테고리:</label>
-          <select value={selectedCategory} onChange={e => {
-            setSelectedCategory(e.target.value);
-            setSelectedMaker('');
-            setSelectedProduct('');
-          }} className="border p-2 w-full">
-            <option value="">선택하세요</option>
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-
-        {selectedCategory && (
           <div className="mb-2">
-            <label className="block mb-1">메이커:</label>
-            <select value={selectedMaker} onChange={e => {
-              setSelectedMaker(e.target.value);
+            <label className="block mb-1">카테고리:</label>
+            <select value={selectedCategory} onChange={e => {
+              setSelectedCategory(e.target.value);
+              setSelectedMaker('');
               setSelectedProduct('');
             }} className="border p-2 w-full">
               <option value="">선택하세요</option>
-              {uniqueMakers.map(m => <option key={m} value={m}>{m}</option>)}
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
-        )}
 
-        {selectedMaker && (
-          <div className="mb-2">
-            <label className="block mb-1">제품:</label>
-            <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)} className="border p-2 w-full">
-              <option value="">선택하세요</option>
-              {products.map(p => <option key={p.product} value={p.product}>{p.product}</option>)}
-            </select>
+          {selectedCategory && (
+            <div className="mb-2">
+              <label className="block mb-1">메이커:</label>
+              <select value={selectedMaker} onChange={e => {
+                setSelectedMaker(e.target.value);
+                setSelectedProduct('');
+              }} className="border p-2 w-full">
+                <option value="">선택하세요</option>
+                {uniqueMakers.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </div>
+          )}
+
+          {selectedMaker && (
+            <div className="mb-2">
+              <label className="block mb-1">제품:</label>
+              <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)} className="border p-2 w-full">
+                <option value="">선택하세요</option>
+                {products.map(p => <option key={p.product} value={p.product}>{p.product}</option>)}
+              </select>
+            </div>
+          )}
+
+          <button onClick={() => {
+            if (selectedProduct && !ownedDevices.includes(selectedProduct)) {
+              setOwnedDevices([...ownedDevices, selectedProduct]);
+            }
+          }} className="px-4 py-2 bg-green-600 text-white rounded-lg mt-2">기기 추가</button>
+
+          {ownedDevices.length > 0 && (
+            <div className="mt-4">
+              <h3 className="font-semibold mb-2">선택한 기기:</h3>
+              <ul className="list-disc list-inside">
+                {ownedDevices.map((dev, idx) => (
+                  <li key={idx} className="flex justify-between items-center">
+                    {dev}
+                    <button onClick={() => setOwnedDevices(ownedDevices.filter(d => d !== dev))} className="ml-4 text-red-500 text-sm">삭제</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-6 flex gap-4">
+            <button
+              onClick={() => {
+                setOwnedDevices([]); // 선택하지 않음
+                handleFinalSubmit();
+              }}
+              className="px-4 py-2 bg-gray-400 text-white rounded-lg"
+            >
+              선택하지 않음
+            </button>
+
+            <button
+              onClick={handleFinalSubmit}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            >
+              다음
+            </button>
           </div>
-        )}
-
-        <button onClick={() => {
-          if (selectedProduct && !ownedDevices.includes(selectedProduct)) {
-            setOwnedDevices([...ownedDevices, selectedProduct]);
-          }
-        }} className="px-4 py-2 bg-green-600 text-white rounded-lg mt-2">기기 추가</button>
-
-        {ownedDevices.length > 0 && (
-          <div className="mt-4">
-            <h3 className="font-semibold mb-2">선택한 기기:</h3>
-            <ul className="list-disc list-inside">
-              {ownedDevices.map((dev, idx) => (
-                <li key={idx} className="flex justify-between items-center">
-                  {dev}
-                  <button onClick={() => setOwnedDevices(ownedDevices.filter(d => d !== dev))} className="ml-4 text-red-500 text-sm">삭제</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
