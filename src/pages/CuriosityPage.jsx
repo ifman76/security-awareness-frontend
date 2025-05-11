@@ -27,8 +27,8 @@ export default function CuriosityPage() {
         console.log("📌 Behavior/Curiosity 문항 수:", behaviorQuestions.length);
 
         const grouped = {
-          GPT_Low: [], GPT_Medium: [], GPT_High: [],
-          Human_Low: [], Human_Medium: [], Human_High: []
+          GPT_Positive: [], GPT_Negative: [], GPT_Neutral: [],
+          Human_Positive: [], Human_Negative: [], Human_Neutral: []
         };
 
         const normalizeKey = (source, difficulty) => {
@@ -37,9 +37,9 @@ export default function CuriosityPage() {
 
           const mappedSource = s === 'gpt' ? 'GPT' : s === 'human' ? 'Human' : '';
           const mappedDifficulty =
-            d === 'low' ? 'Low' :
-            d === 'medium' ? 'Medium' :
-            d === 'high' ? 'High' : '';
+            d === 'positive' ? 'Positive' :
+            d === 'negative' ? 'Negative' :
+            d === 'neutral' ? 'Neutral' : '';
 
           return `${mappedSource}_${mappedDifficulty}`;
         };
@@ -56,13 +56,13 @@ export default function CuriosityPage() {
         const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
 
         const selected = [
-          ...getRandom(grouped.GPT_Low, 1),
-          ...getRandom(grouped.GPT_Medium, 1),
-          ...getRandom(grouped.GPT_High, 1),
-          ...getRandom(grouped.Human_Low, 1),
-          ...getRandom(grouped.Human_Medium, 1),
-          ...getRandom(grouped.Human_High, 1)
-        ].filter(Boolean); // null 방지
+          ...getRandom(grouped.GPT_Positive, 1),
+          ...getRandom(grouped.GPT_Negative, 1),
+          ...getRandom(grouped.GPT_Neutral, 1),
+          ...getRandom(grouped.Human_Positive, 1),
+          ...getRandom(grouped.Human_Negative, 1),
+          ...getRandom(grouped.Human_Neutral, 1)
+        ].filter(Boolean);
 
         console.log("📌 최종 선택된 문항 수:", selected.length);
         setQuestions(selected);
