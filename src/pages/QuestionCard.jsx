@@ -96,11 +96,11 @@ export default function QuestionCard({ questions, onSubmit }) {
           disabled={current === 0}
           className="text-sm text-gray-500 hover:text-gray-800 disabled:text-gray-300"
         >
-          이전
+          이전/Prev
         </button>
 
         <div className="text-xs text-gray-400">
-          응답 완료: {answers.filter(a => a !== null).length} / {questions.length}
+          응답 완료 / Answer Completed : {answers.filter(a => a !== null).length} / {questions.length}
         </div>
 
         <button
@@ -109,7 +109,7 @@ export default function QuestionCard({ questions, onSubmit }) {
           className={`px-4 py-2 rounded-lg text-white text-sm font-medium 
             ${answers[current] === null ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
-          {current === questions.length - 1 ? '제출' : '다음'}
+          {current === questions.length - 1 ? '제출/Submit' : '다음/Next'}
         </button>
       </div>
     </div>
