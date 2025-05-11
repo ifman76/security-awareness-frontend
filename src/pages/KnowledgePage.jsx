@@ -38,6 +38,7 @@ export default function KnowledgePage() {
           ...getRandom(grouped.Human_High, 1),
         ];
 
+        console.log("✅ 선택된 질문:", selected);
         setQuestions(selected);
         setLoading(false);
       })
@@ -56,7 +57,16 @@ export default function KnowledgePage() {
     });
   };
 
-  if (loading || questions.length === 0 || !questions[0]?.choice1) {
+  // ✅ 조건부 렌더링: 로딩 중 또는 첫 질문에 선택지 없음
+  const firstQuestion = questions[0];
+  const hasChoices =
+    firstQuestion?.choice1 ||
+    firstQuestion?.choice2 ||
+    firstQuestion?.choice3 ||
+    firstQuestion?.choice4 ||
+    firstQuestion?.type === 'O/X';
+
+  if (loading || questions.length === 0 || !firstQuestion || !hasChoices) {
     return <div className="p-6">문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)</div>;
   }
 
