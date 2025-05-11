@@ -38,8 +38,14 @@ export default function KnowledgePage() {
           ...getRandom(grouped.Human_High, 1),
         ];
 
+        // ✅ 보기(choice1~4)가 하나라도 존재하는 문제만 필터링
+        const filtered = selected.filter(q =>
+          q.choice1 || q.choice2 || q.choice3 || q.choice4
+        );
+
         console.log("✅ 선택된 질문:", selected);
-        setQuestions(selected);
+        
+        setQuestions(filtered);
         setLoading(false); // ✅ 모든 작업 완료 후 로딩 종료
       })
       .catch((err) => {
