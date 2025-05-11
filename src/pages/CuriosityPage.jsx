@@ -38,7 +38,7 @@ export default function CuriosityPage() {
           const mappedSource = s === 'gpt' ? 'GPT' : s === 'human' ? 'Human' : '';
           const mappedDifficulty =
             d === 'positive' ? 'Positive' :
-            d === 'negative' ? 'Negative' :
+            d === 'reverse' ? 'Negative' :
             d === 'neutral' ? 'Neutral' : '';
 
           return `${mappedSource}_${mappedDifficulty}`;
