@@ -83,7 +83,7 @@ export default function DevicePage() {
     <div className="p-6">
       {!surveyDone ? (
         questions.length === 0 ? (
-          <div>문항을 불러오는 중입니다...</div>
+          <div>문항을 불러오는 중입니다.../ please wait ..</div>
         ) : (
           <QuestionCard questions={questions} onSubmit={handleSurveyComplete} />
         )
@@ -142,7 +142,7 @@ export default function DevicePage() {
               }}
               className="w-full mt-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition"
             >
-              기기 추가 / Add
+              기기 추가 / Add device
             </button>
 
             {ownedDevices.length > 0 && (
@@ -179,6 +179,7 @@ export default function DevicePage() {
             </div>
           </div>
         </div>
-
+      )}
+    </div>
   );
 }
