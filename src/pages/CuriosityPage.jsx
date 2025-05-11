@@ -4,6 +4,7 @@ import QuestionCard from './QuestionCard';
 
 export default function CuriosityPage() {
   const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ 추가
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -15,10 +16,15 @@ export default function CuriosityPage() {
   const certifiedDevices = location.state?.certifiedDevices;
 
   useEffect(() => {
+    console.log("📌 CuriosityPage useEffect 실행됨");
+
     fetch('https://security-awareness-api.onrender.com/questions')
       .then((res) => res.json())
       .then((data) => {
+        console.log("📌 전체 질문 수:", data.length);
+
         const behaviorQuestions = data.filter(q => q.section === 'Behavior/Curiosity');
+        console.log("📌 Behavior/Curiosity 문항 수:", behaviorQuestions.length);
 
         const grouped = {
           GPT_Low: [], GPT_Medium: [], GPT_High: [],
@@ -41,9 +47,14 @@ export default function CuriosityPage() {
           ...getRandom(grouped.Human_High, 1)
         ];
 
+        console.log("📌 최종 선택된 문항 수:", selected.length);
         setQuestions(selected);
+        setLoading(false); // ✅ 반드시 필요
       })
-      .catch((err) => console.error("문항 불러오기 실패:", err));
+      .catch((err) => {
+        console.error("❌ 문항 불러오기 실패:", err);
+        setLoading(false); // ✅ 실패 시에도 false로 설정
+      });
   }, []);
 
   const handleSubmit = (answers) => {
@@ -61,8 +72,8 @@ export default function CuriosityPage() {
     });
   };
 
-  if (questions.length === 0) {
-    return <div className="p-6">문항을 불러오는 중입니다...</div>;
+  if (loading || questions.length === 0) {
+    return <div className="p-6">문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)</div>;
   }
 
   return (
