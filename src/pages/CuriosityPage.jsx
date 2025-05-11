@@ -4,7 +4,7 @@ import QuestionCard from './QuestionCard';
 
 export default function CuriosityPage() {
   const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ 추가
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,9 +31,26 @@ export default function CuriosityPage() {
           Human_Low: [], Human_Medium: [], Human_High: []
         };
 
+        const normalizeKey = (source, difficulty) => {
+          const s = source?.trim().toLowerCase();
+          const d = difficulty?.trim().toLowerCase();
+
+          const mappedSource = s === 'gpt' ? 'GPT' : s === 'human' ? 'Human' : '';
+          const mappedDifficulty =
+            d === 'low' ? 'Low' :
+            d === 'medium' ? 'Medium' :
+            d === 'high' ? 'High' : '';
+
+          return `${mappedSource}_${mappedDifficulty}`;
+        };
+
         behaviorQuestions.forEach(q => {
-          const key = `${q.source}_${q.difficulty}`;
-          if (grouped[key]) grouped[key].push(q);
+          const key = normalizeKey(q.source, q.difficulty);
+          if (grouped[key]) {
+            grouped[key].push(q);
+          } else {
+            console.warn(`❗ 분류되지 않은 문항: ${key}`, q);
+          }
         });
 
         const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
@@ -45,15 +62,15 @@ export default function CuriosityPage() {
           ...getRandom(grouped.Human_Low, 1),
           ...getRandom(grouped.Human_Medium, 1),
           ...getRandom(grouped.Human_High, 1)
-        ];
+        ].filter(Boolean); // null 방지
 
         console.log("📌 최종 선택된 문항 수:", selected.length);
         setQuestions(selected);
-        setLoading(false); // ✅ 반드시 필요
+        setLoading(false);
       })
       .catch((err) => {
         console.error("❌ 문항 불러오기 실패:", err);
-        setLoading(false); // ✅ 실패 시에도 false로 설정
+        setLoading(false);
       });
   }, []);
 
