@@ -9,16 +9,23 @@ export default function QuestionCard({ questions, onSubmit }) {
     updated[current] = choiceIndex;
     setAnswers(updated);
 
-    // 응답 서버에 저장
     const q = questions[current];
-    console.log("현재 질문 객체", q);
-    const choiceText = q[`choice${choiceIndex + 1}`];
+
+    // ✅ 보기 배열 생성 (객관식 또는 O/X)
+    let choices = [];
+    if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+      choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+    } else if (q.type === 'O/X') {
+      choices = ['O', 'X'];
+    }
+
+    const choiceText = choices[choiceIndex];
 
     fetch("https://security-awareness-api.onrender.com/responses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participant_id: "user001", // TODO: 동적 UUID로 대체 가능
+        participant_id: "user001",
         section: q.section,
         question: q.question,
         answer: choiceText,
@@ -42,6 +49,14 @@ export default function QuestionCard({ questions, onSubmit }) {
   };
 
   const q = questions[current];
+
+  let choices = [];
+  if (q.choice1 || q.choice2 || q.choice3 || q.choice4 || q.choice5) {
+    choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+  } else if (q.type === 'O/X') {
+    choices = ['O', 'X'];
+  }
+
   const progressPercent = Math.round(((current + 1) / questions.length) * 100);
 
   return (
@@ -62,18 +77,16 @@ export default function QuestionCard({ questions, onSubmit }) {
         </p>
 
         <div className="space-y-3">
-          {[q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].map((choice, idx) =>
-            choice ? (
-              <button
-                key={idx}
-                onClick={() => handleChoice(idx)}
-                className={`w-full px-4 py-2 border rounded-xl transition-all duration-150 text-sm font-medium
-                  ${answers[current] === idx ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 hover:bg-blue-50'}`}
-              >
-                {choice}
-              </button>
-            ) : null
-          )}
+          {choices.map((choice, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleChoice(idx)}
+              className={`w-full px-4 py-2 border rounded-xl transition-all duration-150 text-sm font-medium
+                ${answers[current] === idx ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 hover:bg-blue-50'}`}
+            >
+              {choice}
+            </button>
+          ))}
         </div>
       </div>
 

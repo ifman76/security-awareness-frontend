@@ -4,7 +4,7 @@ import QuestionCard from './QuestionCard';
 
 export default function KnowledgePage() {
   const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,19 +38,12 @@ export default function KnowledgePage() {
           ...getRandom(grouped.Human_High, 1),
         ];
 
-        // ✅ 보기(choice1~4)가 하나라도 존재하는 문제만 필터링
-        const filtered = selected.filter(q =>
-          q.choice1 || q.choice2 || q.choice3 || q.choice4
-        );
-
-        console.log("✅ 선택된 질문:", selected);
-        
-        setQuestions(filtered);
-        setLoading(false); // ✅ 모든 작업 완료 후 로딩 종료
+        setQuestions(selected);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("❌ 질문 불러오기 실패:", err);
-        setLoading(false); // 실패해도 false 처리해서 루프 방지
+        setLoading(false);
       });
   }, []);
 
@@ -63,7 +56,7 @@ export default function KnowledgePage() {
     });
   };
 
-  if (loading) {
+  if (loading || questions.length === 0 || !questions[0]?.choice1) {
     return <div className="p-6">문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)</div>;
   }
 
