@@ -28,6 +28,41 @@ export default function ResultPage() {
   const deviceScore = getScore(deviceAnswers, deviceQuestions);
   const behaviorScore = getScore(behaviorAnswers, behaviorQuestions);
 
+  import { useEffect } from 'react';
+
+  useEffect(() => {
+    const participant = JSON.parse(localStorage.getItem('participant')) || {};
+    const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
+    const payload = {
+      participant_id: 'user001',
+      knowledgeScore,
+      deviceScore,
+      behaviorScore,
+      totalScore,
+      ownedDevices,
+      timestamp: new Date().toISOString()
+    };
+
+    fetch('https://security-awareness-api.onrender.com/final-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        participant_id: participant.id || 'anonymous',
+        name: participant.name || '',
+        age: participant.age || '',
+        gender: participant.gender || '',
+        knowledgeScore,
+        deviceScore,
+        behaviorScore,
+        totalScore,
+        ownedDevices,
+        timestamp: new Date().toISOString()
+      })
+    })
+    .then(res => res.ok ? console.log('✅ 결과 저장 완료') : console.error('❌ 저장 실패'))
+    .catch(err => console.error('❌ 저장 오류:', err));
+  }, []);
+
   return (
     <div className="p-6 max-w-xl mx-auto">
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
@@ -38,9 +73,8 @@ export default function ResultPage() {
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">그래프 / Radar Chart</h2>
         <div className="mt-4">
-          <img src={`https://quickchart.io/chart?c={type:'radar', data:{labels:['Knowledge','Device','Curiosity'], datasets:[{label:'Score', data:[${knowledgeScore},${deviceScore},${behaviorScore}]}]
-    } }`} alt="Security Awareness Radar Chart" className="w-full rounded-lg" />  
-    </div>
+          <img src="https://quickchart.io/chart?c={type:'radar',data:{labels:['Knowledge','Device','Curiosity'],datasets:[{label:'Score',data:[" + knowledgeScore + "," + deviceScore + "," + behaviorScore + "]}]}}" alt="Security Awareness Radar Chart" className="w-full rounded-lg" />
+        </div>
       </div>
       <h1 className="text-2xl font-bold mb-6 text-center">보안 인식 결과 / Security Awareness Result</h1>
 

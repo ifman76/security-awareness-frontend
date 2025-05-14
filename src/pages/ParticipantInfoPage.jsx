@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ParticipantInfoPage() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function ParticipantInfoPage() {
     }
 
     const participantInfo = {
+      id: uuidv4(),
       ageGroup,
       gender,
       occupation,
@@ -24,6 +26,7 @@ export default function ParticipantInfoPage() {
       selfAssessment,
     };
 
+    localStorage.setItem('participant', JSON.stringify(participantInfo));
     navigate('/knowledge', { state: { participantInfo } });
   };
 
