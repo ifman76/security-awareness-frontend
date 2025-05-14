@@ -39,7 +39,8 @@ export default function ParticipantInfoPage() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-6">
-        <h1 className="text-xl font-bold mb-6 text-center">참여자 정보 입력 / Participant Information</h1>
+        <h1 className="text-xl font-bold mb-6 text-center">참여자 정보 입력 </h1>
+        <h1 className="text-xl font-bold mb-6 text-center">Participant Information</h1>
 
         {/* 연령대 */}
         <div className="mb-4">
@@ -95,7 +96,8 @@ export default function ParticipantInfoPage() {
 
         {/* AI 사용 경험 */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">생성형 AI 사용 경험 / Experience with Generative AI</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">생성형 AI 사용 경험이 있습니까? / Experience with Generative AI</label>
+           
           <div className="space-x-4 text-sm">
             <label>
               <input
@@ -124,7 +126,7 @@ export default function ParticipantInfoPage() {
 
         {/* 자기평가 */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">본인의 보안 인식 수준 (1~5점 자기평가) / Your own security awareness level (1~5)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">본인의 보안 인식 수준 (최저1~최고5점 자기평가) / Your own security awareness level (1~5)</label>
           <div className="space-x-2 text-sm">
             {[1, 2, 3, 4, 5].map((val) => (
               <label key={val}>
