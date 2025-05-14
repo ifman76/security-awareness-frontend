@@ -10,29 +10,24 @@ export default function StartPage() {
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
-      <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-2 leading-snug">
-          귀하의 보안인식 수준을 측정합니다
-        </h2>
-        <p className="text-sm text-gray-500 mb-4">
-          Page for measuring your security awareness
-        </p>
-        <p className="text-base sm:text-lg leading-relaxed text-gray-700 mb-6">
+      <div className="bg-white shadow-xl rounded-2xl p-6 max-w-md mx-auto text-center">
+        <h1 className="text-xl font-bold mb-4">귀하의 보안인식 수준을 측정합니다</h1>
+        <p className="text-base text-gray-700 leading-relaxed mb-2">
           이 실험은 생성형 AI 시대의 보안 인식 수준을 평가하기 위한 것입니다.
-          <br />          
-          총 3개의 영역(지식, 기기, 호기심) 24문항을 측정하며, 예상 소요시간은 5분입니다.
-          <br />
-          <span className="text-sm text-gray-500">
-            It evaluates three key areas: Knowledge, Device Ownership, and Curiosity.
-          </span>
-          <span className="text-sm text-gray-500">
-            It measures 24 questions across three domains (knowledge, devices, and curiosity) and takes an estimated 5 minutes to complete.
-          </span>
-          <br />
         </p>
+        <p className="text-base text-gray-700 leading-relaxed mb-2">
+          총 3개의 영역(지식, 기기, 호기심) 24문항을 측정하며, 예상 소요시간은 5분입니다.
+        </p>
+        <p className="text-sm text-gray-500 mt-4">
+          It evaluates three key areas: Knowledge, Device Ownership, and Curiosity.
+        </p>
+        <p className="text-sm text-gray-500">
+          It measures 24 questions and takes an estimated 5 minutes to complete.
+        </p>
+
         <button
           onClick={handleStart}
-          className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold shadow"
+          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-base font-semibold"
         >
           시작하기 / Start
         </button>
