@@ -12,23 +12,23 @@ export default function StartPage() {
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
       <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-6 text-center">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2 leading-snug">
-          보안 인식수준 측정 페이지입니다
+          귀하의 보안인식 수준을 측정합니다
         </h1>
         <p className="text-sm text-gray-500 mb-4">
           Page for measuring your security awareness
         </p>
         <p className="text-base sm:text-lg leading-relaxed text-gray-700 mb-6">
           이 실험은 생성형 AI 시대의 보안 인식 수준을 평가하기 위한 것입니다.
+          <br />          
+          총 3개의 영역(지식, 기기, 호기심) 24문항을 측정하며, 예상 소요시간은 5분입니다.
           <br />
           <span className="text-sm text-gray-500">
-            This experiment aims to assess your security awareness in the era of Generative AI.
+            It evaluates three key areas: Knowledge, Device Ownership, and Curiosity.
           </span>
-          <br />
-          총 3개의 영역(지식, 기기, 행동/호기심)을 측정합니다.
-          <br />
           <span className="text-sm text-gray-500">
-            It evaluates three key areas: Knowledge, Device Ownership, and Curiosity/Behavior.
+            It measures 24 questions across three domains (knowledge, devices, and curiosity) and takes an estimated 5 minutes to complete.
           </span>
+          <br />
         </p>
         <button
           onClick={handleStart}
