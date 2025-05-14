@@ -33,8 +33,8 @@ export default function ParticipantInfoPage() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-6">
-        <h1 className="text-xl font-bold mb-6 text-center">참여자 정보 입력 
-        <br> Participant Information</h1>
+        <h1 className="text-xl font-bold mb-6 text-center">참여자 정보 입력 </h1>
+         <br> <h1>Participant Information</h1>
 
         {/* 연령대 */}
         <div className="mb-4">
