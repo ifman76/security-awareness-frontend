@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export default function ResultPage() {
@@ -28,7 +29,7 @@ export default function ResultPage() {
   const deviceScore = getScore(deviceAnswers, deviceQuestions);
   const behaviorScore = getScore(behaviorAnswers, behaviorQuestions);
 
-  import { useEffect } from 'react';
+  
 
   useEffect(() => {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
