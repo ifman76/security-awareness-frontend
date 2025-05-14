@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
 
 export default function ParticipantInfoPage() {
   const navigate = useNavigate();
@@ -33,8 +39,7 @@ export default function ParticipantInfoPage() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-6">
-        <h1 className="text-xl font-bold mb-6 text-center">참여자 정보 입력 </h1>
-         <h1>Participant Information</h1>
+        <h1 className="text-xl font-bold mb-6 text-center">참여자 정보 입력 / Participant Information</h1>
 
         {/* 연령대 */}
         <div className="mb-4">
