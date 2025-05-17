@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import StartPage from './pages/StartPage';
 import ParticipantInfoPage from './pages/ParticipantInfoPage';
 import KnowledgePage from './pages/KnowledgePage';
@@ -10,16 +10,14 @@ import AdminPage from './pages/AdminPage';
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<StartPage />} />
-        <Route path="/info" element={<ParticipantInfoPage />} />
-        <Route path="/knowledge" element={<KnowledgePage />} />
-        <Route path="/device" element={<DevicePage />} />
-        <Route path="/curiosity" element={<CuriosityPage />} />
-        <Route path="/result" element={<ResultPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<StartPage />} />
+      <Route path="/info" element={<ParticipantInfoPage />} />
+      <Route path="/knowledge" element={<KnowledgePage />} />
+      <Route path="/device" element={<DevicePage />} />
+      <Route path="/curiosity" element={<CuriosityPage />} />
+      <Route path="/result" element={<ResultPage />} />
+      <Route path="/admin" element={<AdminPage />} />
+    </Routes>
   );
 }
