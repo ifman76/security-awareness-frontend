@@ -25,7 +25,7 @@ export default function QuestionCard({ questions, onSubmit }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        participant_id: "user001",
+        participant_id: participantId,
         section: q.section,
         question: q.question,
         answer: choiceText,
