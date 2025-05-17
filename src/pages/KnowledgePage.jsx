@@ -10,7 +10,7 @@ export default function KnowledgePage() {
   useEffect(() => {
     console.log("📌 useEffect 실행됨");
 
-    fetch('https://security-awareness-api.onrender.com/questions')
+    fetch('https://security-awareness-api.onrender.com/questions?section=Knowledge')
       .then((res) => res.json())
       .then((data) => {
         console.log("📌 전체 질문 데이터:", data);

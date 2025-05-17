@@ -10,17 +10,17 @@ export default function ResultPage() {
     deviceQuestions,
     behaviorAnswers,
     behaviorQuestions,
-    ownedDevices,
+    ownedDevices = [],
     certifiedDevices
   } = location.state || {};
 
-  // 정답 텍스트 기준 점수 계산
+  // 점수 계산 함수
   const getScore = (answers, questions) => {
-    if (!answers || !questions) return 0;
+    if (!answers || !questions || questions.length === 0) return 0;
     let correct = 0;
     answers.forEach((a, idx) => {
       const q = questions[idx];
-      const userAnswer = q?.[`choice${a + 1}`]; // 사용자가 고른 보기 텍스트
+      const userAnswer = q?.[`choice${a + 1}`];
       if (userAnswer && userAnswer === q?.answer) correct++;
     });
     return Math.round((correct / questions.length) * 100);
@@ -31,30 +31,48 @@ export default function ResultPage() {
   const behaviorScore = getScore(behaviorAnswers, behaviorQuestions);
   const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
 
-  // 점수 저장
+  // 점수 저장 요청
   useEffect(() => {
-    const participant = JSON.parse(localStorage.getItem('participant')) || {};
+    const participant = JSON.parse(localStorage.getItem('participant'));
+
+    if (!participant || !participant.id) {
+      console.warn('⛔️ participant 정보 없음. 저장 생략');
+      return;
+    }
+
+    const payload = {
+      participant_id: participant.id,
+      ageGroup: participant.ageGroup || '',
+      gender: participant.gender || '',
+      occupation: participant.occupation || '',
+      aiExperience: participant.aiExperience || '',
+      selfAssessment: participant.selfAssessment || '',
+      knowledgeScore,
+      deviceScore,
+      behaviorScore,
+      totalScore,
+      ownedDevices,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log('📤 저장 요청 데이터:', payload);
 
     fetch('https://security-awareness-api.onrender.com/final-results', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        participant_id: participant.id || 'anonymous',
-        ageGroup: participant.ageGroup || '',
-        gender: participant.gender || '',
-        occupation: participant.occupation || '',
-        aiExperience: participant.aiExperience || '',
-        selfAssessment: participant.selfAssessment || '',
-        knowledgeScore,
-        deviceScore,
-        behaviorScore,
-        totalScore,
-        ownedDevices,
-        timestamp: new Date().toISOString()
-      })
+      body: JSON.stringify(payload)
     })
-      .then(res => res.ok ? console.log('✅ 결과 저장 완료') : console.error('❌ 저장 실패'))
-      .catch(err => console.error('❌ 저장 오류:', err));
+      .then(async res => {
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error('❌ 저장 실패:', res.status, errText);
+        } else {
+          console.log('✅ 결과 저장 완료');
+        }
+      })
+      .catch(err => {
+        console.error('❌ 저장 오류:', err);
+      });
   }, []);
 
   return (
@@ -86,7 +104,7 @@ export default function ResultPage() {
         </div>
       </div>
 
-      {/* 점수 카드 3개 */}
+      {/* 점수 카드 */}
       <h1 className="text-2xl font-bold mb-6 text-center">보안 인식 결과 / Security Awareness Result</h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
