@@ -20,8 +20,7 @@ export default function ResultPage() {
     let correct = 0;
     answers.forEach((a, idx) => {
       const q = questions[idx];
-      const userAnswer = q?.[`choice${a + 1}`];
-      if (userAnswer && userAnswer === q?.answer) correct++;
+      if (a + 1 === q.answer_index) correct++;  // 🔥 핵심!
     });
     return Math.round((correct / questions.length) * 100);
   };
