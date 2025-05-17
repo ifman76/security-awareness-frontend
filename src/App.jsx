@@ -6,6 +6,9 @@ import KnowledgePage from './pages/KnowledgePage';
 import DevicePage from './pages/DevicePage';
 import CuriosityPage from './pages/CuriosityPage';
 import ResultPage from './pages/ResultPage';
+import AdminPage from './pages/AdminPage';
+
+
 
 export default function App() {
   return (
@@ -16,6 +19,7 @@ export default function App() {
       <Route path="/device" element={<DevicePage />} />
       <Route path="/curiosity" element={<CuriosityPage />} />
       <Route path="/result" element={<ResultPage />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
 }
