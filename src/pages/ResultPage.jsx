@@ -25,9 +25,28 @@ export default function ResultPage() {
     return Math.round((correct / questions.length) * 100);
   };
 
+// ✅ 추가: Behavior (Curiosity) 전용 점수 함수
+  const getCuriosityScore = (answers, questions) => {
+    if (!answers || !questions || answers.length !== questions.length) return 0;
+
+    let total = 0;
+
+    answers.forEach((a, idx) => {
+      const q = questions[idx];
+
+      if (q.difficulty === 'reverse') {
+        total += a !== null ? (a + 1) * -1 + 6 : 0;
+      } else {
+        total += a !== null ? 5 - a : 0;
+      }
+    });
+
+    return Math.round((total / questions.length) * 100 / 5);
+  };
+
   const knowledgeScore = getScore(knowledgeAnswers, knowledgeQuestions);
   const deviceScore = getScore(deviceAnswers, deviceQuestions);
-  const behaviorScore = getScore(behaviorAnswers, behaviorQuestions);
+  const behaviorScore = getCuriosityScore(behaviorAnswers, behaviorQuestions);  // ✅
   const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
 
   // 점수 저장 요청
