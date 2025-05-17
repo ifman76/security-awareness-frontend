@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} from 'recharts';
 
 export default function AdminQuestionStatsPage() {
   const [stats, setStats] = useState([]);
@@ -29,9 +32,46 @@ export default function AdminQuestionStatsPage() {
     return total === 0 ? 0 : Math.round((correct / total) * 100);
   };
 
+  // ✅ GPT/Human 평균 정답률 계산
+  const getAverages = () => {
+    const gpt = stats.filter(q => q.source === 'gpt');
+    const human = stats.filter(q => q.source === 'human');
+
+    const avg = (list) => {
+      if (list.length === 0) return 0;
+      const rates = list.map(q => Number(q.correct_count) / Number(q.total_responses || 1));
+      return Math.round((rates.reduce((a, b) => a + b, 0) / rates.length) * 100);
+    };
+
+    return {
+      gpt: avg(gpt),
+      human: avg(human)
+    };
+  };
+
+  const averages = getAverages();
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">📊 문항별 정답률 통계</h1>
+
+      {/* ✅ GPT vs Human 평균 비교 차트 */}
+      <div className="bg-white p-4 mb-6 rounded-xl border shadow">
+        <h2 className="text-lg font-semibold mb-3">🤖 GPT vs Human 평균 정답률 비교</h2>
+        <ResponsiveContainer width="100%" height={240}>
+          <BarChart data={[
+            { source: 'GPT', accuracy: averages.gpt },
+            { source: 'Human', accuracy: averages.human }
+          ]}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="source" />
+            <YAxis domain={[0, 100]} unit="%" />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="accuracy" fill="#8884d8" name="정답률" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
       <div className="mb-4 flex gap-3">
         <button
@@ -72,9 +112,7 @@ export default function AdminQuestionStatsPage() {
             <tbody>
               {filteredStats.map((row, idx) => (
                 <tr key={idx} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2 border text-center font-semibold capitalize">
-                    {row.source}
-                  </td>
+                  <td className="px-4 py-2 border text-center font-semibold capitalize">{row.source}</td>
                   <td className="px-4 py-2 border text-center">{row.section}</td>
                   <td className="px-4 py-2 border whitespace-pre-line">{row.question}</td>
                   <td className="px-4 py-2 border text-center">{row.total_responses}</td>
