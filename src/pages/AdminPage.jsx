@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CSVLink } from 'react-csv';
 
 export default function AdminPage() {
   const [results, setResults] = useState([]);
@@ -20,6 +21,19 @@ export default function AdminPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">🔐 관리자 페이지 - 실험 결과</h1>
+
+      {/* ✅ CSV 다운로드 버튼 */}
+      {!loading && (
+        <div className="mb-4">
+          <CSVLink
+            data={results}
+            filename={`security_awareness_results_${new Date().toISOString().slice(0, 10)}.csv`}
+            className="inline-block bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-green-700 transition"
+          >
+            📥 CSV 다운로드
+          </CSVLink>
+        </div>
+      )}
 
       {loading ? (
         <p className="text-gray-600">불러오는 중입니다...</p>
