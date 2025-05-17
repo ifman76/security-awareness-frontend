@@ -80,8 +80,8 @@ export default function ResultPage() {
     <div className="p-6 max-w-xl mx-auto">
       {/* 총점 카드 */}
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">총점 / Total Score</h2>
-        <p className="text-3xl font-bold text-orange-600">{totalScore}점 / {totalScore} points</p>
+        <h2 className="text-lg font-semibold mb-2">총점 (Total Score)</h2>
+        <p className="text-3xl font-bold text-orange-600">{totalScore}점(points) / 100 점(points)</p>
       </div>
 
       {/* 레이더 차트 */}
@@ -109,14 +109,14 @@ export default function ResultPage() {
       <h1 className="text-2xl font-bold mb-6 text-center">보안 인식 결과 / Security Awareness Result</h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">지식 점수 / Knowledge Score</h2>
+        <h2 className="text-lg font-semibold mb-2">지식 점수 (Knowledge Score)</h2>
         <p className="text-3xl font-bold text-blue-600">
           {knowledgeScore}점 ({knowledgeCorrect} / {knowledgeTotal})
         </p>
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">기기 점수 / Device Score</h2>
+        <h2 className="text-lg font-semibold mb-2">기기 점수 (Device Score)</h2>
         <p className="text-3xl font-bold text-green-600">
           {deviceScore}점 ({deviceCorrect} / {deviceTotal})
         </p>
@@ -126,14 +126,14 @@ export default function ResultPage() {
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">행동 점수 / Curiosity Score</h2>
+        <h2 className="text-lg font-semibold mb-2">행동 점수 (Curiosity Score)</h2>
         <p className="text-3xl font-bold text-purple-600">{behaviorScore}점</p>
         <p className="text-sm text-gray-500 mt-2">리커트 5점 척도 기반 점수화</p>
       </div>
 
       {/* 총평 */}
       <div className="bg-white shadow-xl rounded-2xl p-6">
-        <h2 className="text-lg font-semibold mb-3">총평 / Summary</h2>
+        <h2 className="text-lg font-semibold mb-3">총평 (Summary)</h2>
         <p className="text-sm text-gray-700">
           지식(Knowledge), 기기(Device), 행동(Curiosity)에 기반한 보안 인식 평가 결과입니다.
           각 영역의 점수를 종합적으로 고려하여 개인의 보안 민감도와 리스크 대응 역량을 가늠할 수 있습니다.
