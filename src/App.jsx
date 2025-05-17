@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import StartPage from './pages/StartPage';
-import ParticipantInfoPage from './pages/ParticipantInfoPage';
-import KnowledgePage from './pages/KnowledgePage';
-import DevicePage from './pages/DevicePage';
-import CuriosityPage from './pages/CuriosityPage';
-import ResultPage from './pages/ResultPage';
 import AdminPage from './pages/AdminPage';
+import AdminLogin from './pages/AdminLogin';
+// 기타 페이지들...
 
 export default function App() {
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem('admin_logged_in') === 'true';
+    setAdminLoggedIn(loggedIn);
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<StartPage />} />
-      <Route path="/info" element={<ParticipantInfoPage />} />
-      <Route path="/knowledge" element={<KnowledgePage />} />
-      <Route path="/device" element={<DevicePage />} />
-      <Route path="/curiosity" element={<CuriosityPage />} />
-      <Route path="/result" element={<ResultPage />} />
-      <Route path="/admin" element={<AdminPage />} />
+      {/* 기타 사용자 페이지들 */}
+      <Route
+        path="/admin"
+        element={
+          adminLoggedIn
+            ? <AdminPage onLogout={() => {
+                localStorage.removeItem('admin_logged_in');
+                setAdminLoggedIn(false);
+              }} />
+            : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />
+        }
+      />
     </Routes>
   );
 }
