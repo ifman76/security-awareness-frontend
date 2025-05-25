@@ -9,6 +9,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [results, setResults] = useState([]);
+  const [allResults, setAllResults] = useState([]); // ✅ 전체 final_results
   const [filteredResults, setFilteredResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [genderFilter, setGenderFilter] = useState('전체');
@@ -32,6 +33,7 @@ export default function AdminPage() {
     }
   };
 
+  // 필터용 데이터
   useEffect(() => {
     if (!isLoggedIn) return;
     fetch('https://security-awareness-api.onrender.com/admin/results')
@@ -44,6 +46,15 @@ export default function AdminPage() {
         console.error('❌ 관리자 데이터 불러오기 실패:', err);
         setLoading(false);
       });
+  }, [isLoggedIn]);
+
+  // 전체 final_results 데이터
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    fetch('https://security-awareness-api.onrender.com/admin/final-results')
+      .then(res => res.json())
+      .then(data => setAllResults(data))
+      .catch(err => console.error('❌ 전체 final_results 불러오기 실패:', err));
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -128,11 +139,19 @@ export default function AdminPage() {
       {!loading && (
         <div className="mb-4 flex flex-wrap gap-4 items-center">
           <CSVLink
-            data={filteredResults}
-            filename={`security_awareness_results_${new Date().toISOString().slice(0, 10)}.csv`}
+            data={allResults}
+            filename={`security_awareness_final_results_${new Date().toISOString().slice(0, 10)}.csv`}
             className="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-green-700 transition"
           >
-            📥 CSV 다운로드
+            📥 전체 결과 CSV 다운로드
+          </CSVLink>
+
+          <CSVLink
+            data={filteredResults}
+            filename="filtered_results.csv"
+            className="bg-gray-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+          >
+            🎯 필터 적용된 CSV
           </CSVLink>
 
           <select className="border px-3 py-2 rounded" value={genderFilter} onChange={e => setGenderFilter(e.target.value)}>
