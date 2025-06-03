@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AdminNav from '../components/AdminNav';
 
 export default function AdminResponsesPage() {
   const [responses, setResponses] = useState([]);
@@ -19,6 +20,7 @@ export default function AdminResponsesPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <AdminNav />
       <h1 className="text-2xl font-bold mb-6">🧾 응답자별 응답 상세 보기</h1>
 
       {loading ? (

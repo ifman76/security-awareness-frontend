@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AdminNav from '../components/AdminNav'; //
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
@@ -53,6 +54,7 @@ export default function AdminQuestionStatsPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <AdminNav />
       <h1 className="text-2xl font-bold mb-4">📊 문항별 정답률 통계</h1>
 
       {/* ✅ GPT vs Human 평균 비교 차트 */}

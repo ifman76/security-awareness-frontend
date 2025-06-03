@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CSVLink } from 'react-csv';
+import AdminNav from '../components/AdminNav';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
@@ -123,6 +124,7 @@ export default function AdminPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <AdminNav />
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">🔐 관리자 페이지</h1>
         <button
