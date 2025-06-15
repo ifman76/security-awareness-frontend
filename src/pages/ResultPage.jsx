@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSurvey } from '../contexts/SurveyContext'; // ✅ SurveyContext 추가
 
 export default function ResultPage() {
   const location = useLocation();
@@ -13,6 +14,8 @@ export default function ResultPage() {
     ownedDevices,
     certifiedDevices
   } = location.state || {};
+
+  const { setAnsweredQuestions } = useSurvey(); // ✅ 응답 저장용 함수 사용
 
   // ✅ 정답 기반 점수 계산 (지식/기기)
   const getScore = (answers, questions) => {
@@ -47,13 +50,25 @@ export default function ResultPage() {
   const { score: deviceScore, correct: deviceCorrect, total: deviceTotal } =
     getScore(deviceAnswers, deviceQuestions);
   const behaviorScore = getCuriosityScore(behaviorAnswers, behaviorQuestions);
-
   const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
 
-  // ✅ 결과 저장
+  // ✅ 결과 저장 및 answeredQuestions 저장
   useEffect(() => {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
 
+    // ✅ 파일럿 피드백용 answeredQuestions 구성
+    const allQuestions = [
+      ...(knowledgeQuestions || []),
+      ...(deviceQuestions || []),
+      ...(behaviorQuestions || [])
+    ];
+    const answeredSummary = allQuestions.map(q => ({
+      id: q.id || q.qid || q.question_id || 'unknown',
+      text: q.text || q.question || q.title || '질문 텍스트 없음'
+    }));
+    setAnsweredQuestions(answeredSummary); // ✅ Context에 저장
+
+    // ✅ 점수 서버 전송
     fetch('https://security-awareness-api.onrender.com/final-results', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -81,7 +96,7 @@ export default function ResultPage() {
       {/* 총점 카드 */}
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">총점 (Total Score : 100점 만점 중)</h2>
-        <p className="text-3xl font-bold text-orange-600">{totalScore}점(points) </p>
+        <p className="text-3xl font-bold text-orange-600">{totalScore}점(points)</p>
       </div>
 
       {/* 레이더 차트 */}
@@ -105,18 +120,18 @@ export default function ResultPage() {
         </div>
       </div>
 
-      {/* 점수 카드 */}
+      {/* 개별 영역 점수 카드 */}
       <h1 className="text-2xl font-bold mb-6 text-center">보안 인식 결과 / Security Awareness Result</h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">지식 점수 (Knowledge Score : 100점 만점)</h2>
+        <h2 className="text-lg font-semibold mb-2">지식 점수 (Knowledge Score)</h2>
         <p className="text-3xl font-bold text-blue-600">
           {knowledgeScore}점 ({knowledgeCorrect} / {knowledgeTotal})
         </p>
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">기기 점수 (Device Score : 100점 만점)</h2>
+        <h2 className="text-lg font-semibold mb-2">기기 점수 (Device Score)</h2>
         <p className="text-3xl font-bold text-green-600">
           {deviceScore}점 ({deviceCorrect} / {deviceTotal})
         </p>
@@ -126,7 +141,7 @@ export default function ResultPage() {
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">행동 점수 (Curiosity Score : 100점 만점)</h2>
+        <h2 className="text-lg font-semibold mb-2">행동 점수 (Curiosity Score)</h2>
         <p className="text-3xl font-bold text-purple-600">{behaviorScore}점</p>
         <p className="text-sm text-gray-500 mt-2">리커트 5점 척도 기반 점수화</p>
       </div>
@@ -138,7 +153,7 @@ export default function ResultPage() {
           지식(Knowledge), 기기(Device), 행동(Curiosity)에 기반한 보안 인식 평가 결과입니다.
           각 영역의 점수를 종합적으로 고려하여 개인의 보안 민감도와 리스크 대응 역량을 가늠할 수 있습니다.
         </p>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-gray-700 mt-1">
           This security awareness assessment is based on knowledge, device ownership, and behavioral curiosity.
           Your scores across these areas provide an integrated view of your security sensitivity and risk response capability.
         </p>
