@@ -67,10 +67,10 @@ export default function KnowledgePage() {
     firstQuestion?.type === 'O/X';
 
   if (loading || questions.length === 0 || !firstQuestion || !hasChoices) {
-    return 
+    return (
       <div className="p-6">
         문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)
-        / Please Wait...</div>;
+        / Please Wait...</div>);
   }
 
   return (
