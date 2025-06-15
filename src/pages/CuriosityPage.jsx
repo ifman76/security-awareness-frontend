@@ -82,6 +82,7 @@ export default function CuriosityPage() {
         ownedDevices
       },
     });
+  };    
 /*파일럿 테스트 후 복구    
     navigate('/result', {
       state: {
