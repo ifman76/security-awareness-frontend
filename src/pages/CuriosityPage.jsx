@@ -71,6 +71,18 @@ export default function CuriosityPage() {
   }, []);
 
   const handleSubmit = (answers) => {
+    navigate('/pilot-feedback', {
+      state: {
+        knowledgeAnswers,
+        knowledgeQuestions,
+        deviceAnswers,
+        deviceQuestions,
+        behaviorAnswers: answers,
+        behaviorQuestions,
+        ownedDevices
+      },
+    });
+/*파일럿 테스트 후 복구    
     navigate('/result', {
       state: {
         knowledgeAnswers,
@@ -84,6 +96,7 @@ export default function CuriosityPage() {
       },
     });
   };
+*/  
 
   if (loading || questions.length === 0) {
     return <div className="p-6">문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)</div>;
