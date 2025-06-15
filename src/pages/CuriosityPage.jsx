@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
+import { useSurvey } from '../contexts/SurveyContext'; // ✅ 추가 파일럿테스트
 
 export default function CuriosityPage() {
   const [questions, setQuestions] = useState([]);
@@ -14,6 +15,8 @@ export default function CuriosityPage() {
   const deviceQuestions = location.state?.deviceQuestions;
   const ownedDevices = location.state?.ownedDevices;
   const certifiedDevices = location.state?.certifiedDevices;
+
+  const { setAnsweredQuestions } = useSurvey(); // ✅ context 함수 불러오기, 파일럿테스트
 
   useEffect(() => {
     console.log("📌 CuriosityPage useEffect 실행됨");
@@ -71,15 +74,29 @@ export default function CuriosityPage() {
   }, []);
 
   const handleSubmit = (answers) => {
+    // 파일럿테스트용 - 전체 문항 모아서 answeredQuestions에 저장
+    const allQuestions = [
+      ...(location.state?.knowledgeQuestions || []),
+      ...(location.state?.deviceQuestions || []),
+      ...questions
+    ];
+
+    const answeredSummary = allQuestions.map((q) => ({
+      id: q.id || q.qid || 'unknown',
+      text: q.text || q.question || '문항 텍스트 없음'
+    }));
+
+    setAnsweredQuestions(answeredSummary); // ✅ 저장.파일럿테스트용
+    
     navigate('/pilot-feedback', {
       state: {
-        knowledgeAnswers,
-        knowledgeQuestions,
-        deviceAnswers,
-        deviceQuestions,
         behaviorAnswers: answers,
-        behaviorQuestions,
-        ownedDevices
+        behaviorQuestions: questions, 
+        knowledgeAnswers: location.state?.knowledgeAnswers || [],
+        knowledgeQuestions: location.state?.knowledgeQuestions || [],
+        deviceAnswers: location.state?.deviceAnswers || [],
+        deviceQuestions: location.state?.deviceQuestions || [],
+        ownedDevices: location.state?.ownedDevices || []
       },
     });
   };    
