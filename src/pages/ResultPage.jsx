@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSurvey } from '../contexts/SurveyContext'; // ✅ SurveyContext 추가
+import { useSurvey } from '../contexts/SurveyContext';
 
 export default function ResultPage() {
   const location = useLocation();
@@ -15,9 +15,8 @@ export default function ResultPage() {
     certifiedDevices
   } = location.state || {};
 
-  const { setAnsweredQuestions } = useSurvey(); // ✅ 응답 저장용 함수 사용
+  const { setAnsweredQuestions } = useSurvey();
 
-  // ✅ 정답 기반 점수 계산 (지식/기기)
   const getScore = (answers, questions) => {
     if (!answers || !questions || questions.length === 0) return { score: 0, correct: 0, total: 0 };
     let correct = 0;
@@ -29,22 +28,20 @@ export default function ResultPage() {
     return { score, correct, total: questions.length };
   };
 
-  // ✅ 리커트 기반 점수 계산 (호기심/행동)
   const getCuriosityScore = (answers, questions) => {
     if (!answers || !questions || answers.length !== questions.length) return 0;
     let total = 0;
     answers.forEach((a, idx) => {
       const q = questions[idx];
       if (q.difficulty === 'reverse') {
-        total += a !== null ? (a + 1) * -1 + 6 : 0; // 역방향
+        total += a !== null ? (a + 1) * -1 + 6 : 0;
       } else {
-        total += a !== null ? 5 - a : 0; // 정방향
+        total += a !== null ? 5 - a : 0;
       }
     });
-    return Math.round((total / questions.length) * 100 / 5); // 백분율
+    return Math.round((total / questions.length) * 100 / 5);
   };
 
-  // ✅ 점수 계산
   const { score: knowledgeScore, correct: knowledgeCorrect, total: knowledgeTotal } =
     getScore(knowledgeAnswers, knowledgeQuestions);
   const { score: deviceScore, correct: deviceCorrect, total: deviceTotal } =
@@ -52,11 +49,10 @@ export default function ResultPage() {
   const behaviorScore = getCuriosityScore(behaviorAnswers, behaviorQuestions);
   const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
 
-  // ✅ 결과 저장 및 answeredQuestions 저장
   useEffect(() => {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
+    const participantId = participant.id || 'anonymous';
 
-    // ✅ 파일럿 피드백용 answeredQuestions 구성
     const allQuestions = [
       ...(knowledgeQuestions || []),
       ...(deviceQuestions || []),
@@ -66,15 +62,14 @@ export default function ResultPage() {
       id: q.id || q.qid || q.question_id || 'unknown',
       text: q.text || q.question || q.title || '질문 텍스트 없음'
     }));
-    setAnsweredQuestions(answeredSummary); // ✅ Context에 저장
+    setAnsweredQuestions(answeredSummary);
 
-    // ✅ 점수 서버 전송
-    saveResponses();
+    // ✅ 1. 점수 저장
     fetch('https://security-awareness-api.onrender.com/final-results', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        participant_id: participant.id || 'anonymous',
+        participant_id: participantId,
         ageGroup: participant.ageGroup || '',
         gender: participant.gender || '',
         occupation: participant.occupation || '',
@@ -87,22 +82,71 @@ export default function ResultPage() {
         ownedDevices,
         timestamp: new Date().toISOString()
       })
-    })
-      .then(res => res.ok ? console.log('✅ 결과 저장 완료') : console.error('❌ 저장 실패'))
-      .catch(err => console.error('❌ 저장 오류:', err));
+    }).then(res => {
+      if (res.ok) {
+        console.log('✅ 점수 저장 완료');
+      } else {
+        console.error('❌ 점수 저장 실패');
+      }
+    }).catch(err => console.error('❌ 점수 저장 오류:', err));
+
+    // ✅ 2. 응답 저장
+    const saveResponses = async () => {
+      const responses = [];
+
+      knowledgeAnswers.forEach((ans, idx) => {
+        const q = knowledgeQuestions[idx];
+        responses.push({
+          participant_id: participantId,
+          question_id: q.id,
+          answer_index: ans,
+        });
+      });
+
+      deviceAnswers.forEach((ans, idx) => {
+        const q = deviceQuestions[idx];
+        responses.push({
+          participant_id: participantId,
+          question_id: q.id,
+          answer_index: ans,
+        });
+      });
+
+      behaviorAnswers.forEach((ans, idx) => {
+        const q = behaviorQuestions[idx];
+        responses.push({
+          participant_id: participantId,
+          question_id: q.id,
+          answer_index: ans,
+        });
+      });
+
+      try {
+        await fetch('https://security-awareness-api.onrender.com/responses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ responses }),
+        });
+        console.log('✅ responses 저장 완료');
+      } catch (err) {
+        console.error('❌ responses 저장 실패:', err);
+      }
+    };
+
+    saveResponses();
   }, []);
 
   return (
     <div className="p-6 max-w-xl mx-auto">
       {/* 총점 카드 */}
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">총점 (Total Score : 100점 만점 중)</h2>
-        <p className="text-3xl font-bold text-orange-600">{totalScore}점(points)</p>
+        <h2 className="text-lg font-semibold mb-2">총점 (Total Score)</h2>
+        <p className="text-3xl font-bold text-orange-600">{totalScore}점</p>
       </div>
 
       {/* 레이더 차트 */}
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">그래프 / Radar Chart</h2>
+        <h2 className="text-lg font-semibold mb-2">Radar Chart</h2>
         <div className="mt-4">
           <img
             src={`https://quickchart.io/chart?c={
@@ -115,48 +159,43 @@ export default function ResultPage() {
                 }]
               }
             }`}
-            alt="Security Awareness Radar Chart"
+            alt="Radar Chart"
             className="w-full rounded-lg"
           />
         </div>
       </div>
 
-      {/* 개별 영역 점수 카드 */}
-      <h1 className="text-2xl font-bold mb-6 text-center">보안 인식 결과 / Security Awareness Result</h1>
+      {/* 개별 점수 */}
+      <h1 className="text-2xl font-bold mb-6 text-center">Security Awareness Result</h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">지식 점수 (Knowledge Score)</h2>
+        <h2 className="text-lg font-semibold mb-2">Knowledge</h2>
         <p className="text-3xl font-bold text-blue-600">
           {knowledgeScore}점 ({knowledgeCorrect} / {knowledgeTotal})
         </p>
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">기기 점수 (Device Score)</h2>
+        <h2 className="text-lg font-semibold mb-2">Device</h2>
         <p className="text-3xl font-bold text-green-600">
           {deviceScore}점 ({deviceCorrect} / {deviceTotal})
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          보유 기기(추가점수): {ownedDevices?.join(', ') || '선택 안함 / Not selected'}
+          보유 기기: {ownedDevices?.join(', ') || '선택 안함'}
         </p>
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-2">행동 점수 (Curiosity Score)</h2>
+        <h2 className="text-lg font-semibold mb-2">Curiosity</h2>
         <p className="text-3xl font-bold text-purple-600">{behaviorScore}점</p>
         <p className="text-sm text-gray-500 mt-2">리커트 5점 척도 기반 점수화</p>
       </div>
 
       {/* 총평 */}
       <div className="bg-white shadow-xl rounded-2xl p-6">
-        <h2 className="text-lg font-semibold mb-3">총평 (Summary)</h2>
+        <h2 className="text-lg font-semibold mb-3">총평</h2>
         <p className="text-sm text-gray-700">
-          지식(Knowledge), 기기(Device), 행동(Curiosity)에 기반한 보안 인식 평가 결과입니다.
-          각 영역의 점수를 종합적으로 고려하여 개인의 보안 민감도와 리스크 대응 역량을 가늠할 수 있습니다.
-        </p>
-        <p className="text-sm text-gray-700 mt-1">
-          This security awareness assessment is based on knowledge, device ownership, and behavioral curiosity.
-          Your scores across these areas provide an integrated view of your security sensitivity and risk response capability.
+          본 결과는 지식, 기기, 행동 기반의 보안 인식 수준을 평가한 것입니다.
         </p>
       </div>
     </div>
