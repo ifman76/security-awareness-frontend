@@ -98,8 +98,11 @@ export default function ResultPage() {
         const q = knowledgeQuestions[idx];
         responses.push({
           participant_id: participantId,
-          question_id: q.id,
+          section: 'Knowledge',
+          question: q.no || q.id || `K-${idx + 1}`,
+          answer: q[`choice${ans + 1}`] || '',
           answer_index: ans,
+          timestamp: new Date().toISOString()
         });
       });
 
@@ -107,8 +110,11 @@ export default function ResultPage() {
         const q = deviceQuestions[idx];
         responses.push({
           participant_id: participantId,
-          question_id: q.id,
+          section: 'Device',
+          question: q.no || q.id || `D-${idx + 1}`,
+          answer: q[`choice${ans + 1}`] || '',
           answer_index: ans,
+          timestamp: new Date().toISOString()
         });
       });
 
@@ -116,8 +122,11 @@ export default function ResultPage() {
         const q = behaviorQuestions[idx];
         responses.push({
           participant_id: participantId,
-          question_id: q.id,
+          section: 'Behavior',
+          question: q.no || q.id || `B-${idx + 1}`,
+          answer: q[`choice${ans + 1}`] || '',
           answer_index: ans,
+          timestamp: new Date().toISOString()
         });
       });
 
