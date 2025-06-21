@@ -69,6 +69,7 @@ export default function ResultPage() {
     setAnsweredQuestions(answeredSummary); // ✅ Context에 저장
 
     // ✅ 점수 서버 전송
+    saveResponses();
     fetch('https://security-awareness-api.onrender.com/final-results', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
