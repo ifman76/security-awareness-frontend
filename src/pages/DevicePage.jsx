@@ -61,18 +61,37 @@ export default function DevicePage() {
     setSurveyDone(true);
   };
 
-  const handleFinalSubmit = () => {
-    navigate('/curiosity', {
-      state: {
-        knowledgeAnswers,
-        knowledgeQuestions,
-        deviceAnswers,
-        deviceQuestions: questions,
-        ownedDevices,
-        certifiedDevices: devices,
-      },
+const handleFinalSubmit = async () => {
+  const participant = JSON.parse(localStorage.getItem('participant'));
+
+  // ✅ responses 저장
+  try {
+    await fetch('https://security-awareness-api.onrender.com/responses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        participant_id: participant.id,
+        section: 'Device',
+        answers: deviceAnswers,
+      }),
     });
-  };
+  } catch (err) {
+    console.error('❌ Device 응답 저장 실패:', err);
+  }
+
+  // ✅ 다음 페이지 이동
+  navigate('/curiosity', {
+    state: {
+      knowledgeAnswers,
+      knowledgeQuestions,
+      deviceAnswers,
+      deviceQuestions: questions,
+      ownedDevices,
+      certifiedDevices: devices,
+    },
+  });
+};
+
 
   const categories = [...new Set(devices.map(d => d.category))];
   const makers = devices.filter(d => d.category === selectedCategory).map(d => d.maker);
