@@ -1,6 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+export default function StartPage() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Knowledge 질문 미리 받아오기
     fetch('https://security-awareness-api.onrender.com/questions?section=Knowledge')
@@ -11,6 +14,10 @@ import { useNavigate } from 'react-router-dom';
       })
       .catch(err => console.error('❌ Knowledge 질문 캐싱 실패:', err));
   }, []);
+
+    const handleStart = () => {
+      navigate('/info');
+    };
 
 
   return (
