@@ -48,21 +48,7 @@ export default function KnowledgePage() {
       });
   }, []);
 
-  const handleSubmit = async (answers) => {
-    const participant = JSON.parse(localStorage.getItem('participant'));
-
-    // ✅ responses 저장
-    await fetch('https://security-awareness-api.onrender.com/responses', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        participant_id: participant.id,
-        section: 'Knowledge',
-        answers: answers, // answers는 [{ id, answer }] 형식이어야 함
-      }),
-    });
-
-    // ✅ 다음 단계로 이동
+  const handleSubmit = (answers) => {
     navigate('/device', {
       state: {
         knowledgeAnswers: answers,
