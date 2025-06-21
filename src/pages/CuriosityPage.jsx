@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
-import { useSurvey } from '../contexts/SurveyContext'; // ✅ 추가 파일럿테스트
+
+// 🔁 파일럿 테스트용 Context: 주석처리 (본실험에선 사용 안함)
+// import { useSurvey } from '../contexts/SurveyContext';
 
 export default function CuriosityPage() {
   const [questions, setQuestions] = useState([]);
@@ -16,18 +18,14 @@ export default function CuriosityPage() {
   const ownedDevices = location.state?.ownedDevices;
   const certifiedDevices = location.state?.certifiedDevices;
 
-  const { setAnsweredQuestions } = useSurvey(); // ✅ context 함수 불러오기, 파일럿테스트
+  // 🔁 파일럿: Context 함수 – 본실험에서는 사용 안함
+  // const { setAnsweredQuestions } = useSurvey();
 
   useEffect(() => {
-    console.log("📌 CuriosityPage useEffect 실행됨");
-
     fetch('https://security-awareness-api.onrender.com/questions')
       .then((res) => res.json())
       .then((data) => {
-        console.log("📌 전체 질문 수:", data.length);
-
         const behaviorQuestions = data.filter(q => q.section === 'Behavior/Curiosity');
-        console.log("📌 Behavior/Curiosity 문항 수:", behaviorQuestions.length);
 
         const grouped = {
           GPT_Positive: [], GPT_Reverse: [],
@@ -47,11 +45,7 @@ export default function CuriosityPage() {
 
         behaviorQuestions.forEach(q => {
           const key = normalizeKey(q.source, q.difficulty);
-          if (grouped[key]) {
-            grouped[key].push(q);
-          } else {
-            console.warn(`❗ 분류되지 않은 문항: ${key}`, q);
-          }
+          if (grouped[key]) grouped[key].push(q);
         });
 
         const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
@@ -63,7 +57,6 @@ export default function CuriosityPage() {
           ...getRandom(grouped.Human_Reverse, 1)
         ].filter(Boolean);
 
-        console.log("📌 최종 선택된 문항 수:", selected.length);
         setQuestions(selected);
         setLoading(false);
       })
@@ -73,48 +66,48 @@ export default function CuriosityPage() {
       });
   }, []);
 
-  const handleSubmit = (answers) => {
-    // 파일럿테스트용 - 전체 문항 모아서 answeredQuestions에 저장
+  const handleSubmit = async (answers) => {
+    const finalPayload = {
+      participant: JSON.parse(localStorage.getItem('participant')),
+      knowledgeAnswers: knowledgeAnswers || [],
+      knowledgeQuestions: knowledgeQuestions || [],
+      deviceAnswers: deviceAnswers || [],
+      deviceQuestions: deviceQuestions || [],
+      ownedDevices: ownedDevices || [],
+      certifiedDevices: certifiedDevices || [],
+      behaviorAnswers: answers,
+      behaviorQuestions: questions,
+    };
+
+    // ✅ [본실험용] 최종 결과 서버 저장
+    try {
+      await fetch('https://security-awareness-api.onrender.com/final-results', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(finalPayload),
+      });
+    } catch (err) {
+      console.error("❌ 결과 저장 중 오류 발생", err);
+    }
+
+    // ✅ [본실험용] 결과 페이지로 이동
+    navigate('/result', { state: finalPayload });
+
+    // 🔁 [파일럿용] - 아래 블록 전체 주석 처리
+    /*
     const allQuestions = [
-      ...(location.state?.knowledgeQuestions || []),
-      ...(location.state?.deviceQuestions || []),
+      ...(knowledgeQuestions || []),
+      ...(deviceQuestions || []),
       ...questions
     ];
-
     const answeredSummary = allQuestions.map((q) => ({
       id: q.id || q.qid || 'unknown',
       text: q.text || q.question || '문항 텍스트 없음'
     }));
-
-    setAnsweredQuestions(answeredSummary); // ✅ 저장.파일럿테스트용
-    
-    navigate('/pilot-feedback', {
-      state: {
-        behaviorAnswers: answers,
-        behaviorQuestions: questions, 
-        knowledgeAnswers: location.state?.knowledgeAnswers || [],
-        knowledgeQuestions: location.state?.knowledgeQuestions || [],
-        deviceAnswers: location.state?.deviceAnswers || [],
-        deviceQuestions: location.state?.deviceQuestions || [],
-        ownedDevices: location.state?.ownedDevices || []
-      },
-    });
-  };    
-/*파일럿 테스트 후 복구    
-    navigate('/result', {
-      state: {
-        knowledgeAnswers,
-        knowledgeQuestions,
-        deviceAnswers,
-        deviceQuestions,
-        ownedDevices,
-        certifiedDevices,
-        behaviorAnswers: answers,
-        behaviorQuestions: questions,
-      },
-    });
+    setAnsweredQuestions(answeredSummary);
+    navigate('/pilot-feedback', { state: finalPayload });
+    */
   };
-*/  
 
   if (loading || questions.length === 0) {
     return <div className="p-6">문항을 불러오는 중입니다...(최초 접속 시 약간의 시간이 걸릴 수 있습니다)</div>;
