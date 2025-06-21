@@ -1,12 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function StartPage() {
-  const navigate = useNavigate();
+  useEffect(() => {
+    // Knowledge 질문 미리 받아오기
+    fetch('https://security-awareness-api.onrender.com/questions?section=Knowledge')
+      .then(res => res.json())
+      .then(data => {
+        localStorage.setItem('cachedKnowledgeQuestions', JSON.stringify(data));
+        console.log('✅ Knowledge 질문 미리 캐싱 완료');
+      })
+      .catch(err => console.error('❌ Knowledge 질문 캐싱 실패:', err));
+  }, []);
 
-  const handleStart = () => {
-    navigate('/info');
-  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">

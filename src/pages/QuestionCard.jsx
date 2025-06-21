@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 export default function QuestionCard({ questions, onSubmit }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const participant = JSON.parse(localStorage.getItem('participant')) || {};
+  const participantId = participant.id || 'anonymous';
+
 
   const handleChoice = (choiceIndex) => {
     const updated = [...answers];
