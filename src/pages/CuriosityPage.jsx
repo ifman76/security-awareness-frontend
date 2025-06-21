@@ -67,8 +67,10 @@ export default function CuriosityPage() {
   }, []);
 
   const handleSubmit = async (answers) => {
+    const participant = JSON.parse(localStorage.getItem('participant'));
+
     const finalPayload = {
-      participant: JSON.parse(localStorage.getItem('participant')),
+      participant,
       knowledgeAnswers: knowledgeAnswers || [],
       knowledgeQuestions: knowledgeQuestions || [],
       deviceAnswers: deviceAnswers || [],
@@ -78,6 +80,21 @@ export default function CuriosityPage() {
       behaviorAnswers: answers,
       behaviorQuestions: questions,
     };
+
+  // ✅ responses 저장
+  try {
+    await fetch('https://security-awareness-api.onrender.com/responses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        participant_id: participant.id,
+        section: 'Behavior/Curiosity',
+        answers: answers,
+      }),
+    });
+  } catch (err) {
+    console.error("❌ responses 저장 실패:", err);
+  }
 
     // ✅ [본실험용] 최종 결과 서버 저장
     try {
