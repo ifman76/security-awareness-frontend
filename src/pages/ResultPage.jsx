@@ -92,7 +92,10 @@ export default function ResultPage() {
       }
     }).catch(err => console.error('❌ 점수 저장 오류:', err));
 
-    // ✅ 2. 응답 저장
+   
+
+
+    // ✅ 2. 응답 저장------------------------------------
     const saveResponses = async () => {
       const responses = [];
 
@@ -120,7 +123,7 @@ export default function ResultPage() {
           if (typeof q.answer_index === 'number') {
             item.answer_index = q.answer_index;
           }
-
+          console.log("🔍 개별 응답:", item);  
           responses.push(item);
         });
       });
