@@ -119,7 +119,7 @@ export default function ResultPage() {
           responses.push({
             participant_id: participantId,
             section: name,
-            question: typeof q.no === 'string' ? q.no : q.id || `Q-${idx + 1}`,
+            no: q.no || q.id || `Q-${idx + 1}`,  // ✅ 필드명 변경!
             answer: choiceText,
             answer_index: ans,
             timestamp: new Date().toISOString()
