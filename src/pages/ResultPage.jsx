@@ -96,6 +96,13 @@ export default function ResultPage() {
     const saveResponses = async () => {
       const responses = [];
 
+      console.log("📦 개별 응답 확인:");
+      responses.forEach((r, i) => {
+        if (!r.no || !r.answer) {
+          console.warn(`⚠️ ${i + 1}번 응답 누락 - no: ${r.no}, answer: ${r.answer}`);
+        }
+      });
+
       const sections = [
         { name: 'Knowledge', questions: knowledgeQuestions, answers: knowledgeAnswers },
         { name: 'Device', questions: deviceQuestions, answers: deviceAnswers },
