@@ -33,8 +33,8 @@ export default function KnowledgePage() {
         console.log("📦 분류 후 Human_Low 샘플:", grouped.Human_Low[0]);
 
 
-        const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
-
+        const getRandom = (arr, n) => [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
+        
         const selected = [
           ...getRandom(grouped.GPT_Low, 1),
           ...getRandom(grouped.GPT_Medium, 2),
