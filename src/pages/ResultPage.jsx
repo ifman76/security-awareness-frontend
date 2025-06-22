@@ -124,7 +124,14 @@ export default function ResultPage() {
             item.answer_index = q.answer_index;
           }
           console.log("🔍 개별 응답:", item);  
-          responses.push(item);
+          responses.push({
+            participant_id: participantId,
+            section: name,
+            no: q.no || q.id || `Q-${idx + 1}`,
+            answer: Number(ans + 1),
+            timestamp: new Date().toISOString(),
+            ...(typeof q.answer_index === 'number' ? { answer_index: q.answer_index } : {})
+          });
         });
       });
 
