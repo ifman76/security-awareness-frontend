@@ -81,7 +81,7 @@ export default function ResultPage() {
         deviceScore,
         behaviorScore,
         totalScore,
-        ownedDevices,
+        ownedDevices: ownedDevices?.join(', ') || '',
         timestamp: new Date().toISOString()
       })
     }).then(res => {
@@ -102,9 +102,9 @@ export default function ResultPage() {
           responses.push({
             participant_id: participantId,
             section: 'Knowledge',
-            question: q.no || q.id || `K-${idx + 1}`,
-            answer: q[`choice${ans + 1}`] || '',
-            answer_index: ans,
+            question: q.no,
+            answer: typeof ans === 'number' && q[`choice${ans + 1}`] ? q[`choice${ans + 1}`] : '무응답',
+            answer_index: typeof ans === 'number' ? ans : -1,
             timestamp: new Date().toISOString()
           });
         }  
@@ -116,9 +116,9 @@ export default function ResultPage() {
           responses.push({
             participant_id: participantId,
             section: 'Device',
-            question: q.no || q.id || `D-${idx + 1}`,
-            answer: q[`choice${ans + 1}`] || '',
-            answer_index: ans,
+            question: q.no,
+            answer: typeof ans === 'number' && q[`choice${ans + 1}`] ? q[`choice${ans + 1}`] : '무응답',
+            answer_index: typeof ans === 'number' ? ans : -1,
             timestamp: new Date().toISOString()
           });
         }
@@ -130,9 +130,9 @@ export default function ResultPage() {
           responses.push({
             participant_id: participantId,
             section: 'Behavior',
-            question: q.no || q.id || `B-${idx + 1}`,
-            answer: q[`choice${ans + 1}`] || '',
-            answer_index: ans,
+            question: q.no,
+            answer: typeof ans === 'number' && q[`choice${ans + 1}`] ? q[`choice${ans + 1}`] : '무응답',
+            answer_index: typeof ans === 'number' ? ans : -1,
             timestamp: new Date().toISOString()
           });
         }
