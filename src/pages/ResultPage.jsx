@@ -96,13 +96,6 @@ export default function ResultPage() {
     const saveResponses = async () => {
       const responses = [];
 
-      console.log("📦 개별 응답 확인:");
-      responses.forEach((r, i) => {
-        if (!r.no || !r.answer) {
-          console.warn(`⚠️ ${i + 1}번 응답 누락 - no: ${r.no}, answer: ${r.answer}`);
-        }
-      });
-
       const sections = [
         { name: 'Knowledge', questions: knowledgeQuestions, answers: knowledgeAnswers },
         { name: 'Device', questions: deviceQuestions, answers: deviceAnswers },
@@ -120,11 +113,11 @@ export default function ResultPage() {
             participant_id: participantId,
             section: name,
             no: q.no || q.id || `Q-${idx + 1}`,
-            answer: selectedChoice,
+            answer: selectedChoice,  // ✅ 정답이 아니라 응답 선택 번호
             timestamp: new Date().toISOString()
           };
 
-          if (q.answer_index !== null && q.answer_index !== undefined) {
+          if (typeof q.answer_index === 'number') {
             item.answer_index = q.answer_index;
           }
 
@@ -132,6 +125,12 @@ export default function ResultPage() {
         });
       });
 
+      // ✅ 응답 수집 후 누락된 항목 확인
+      responses.forEach((r, i) => {
+        if (!r.no || typeof r.answer !== 'number') {
+          console.warn(`⚠️ ${i + 1}번 응답 누락 또는 오류 - no: ${r.no}, answer: ${r.answer}`);
+        }
+      });
 
       console.log("📦 최종 responses 전송 데이터:", JSON.stringify(responses, null, 2));
 
@@ -151,6 +150,7 @@ export default function ResultPage() {
         console.error('❌ responses 저장 실패:', err);
       }
     };
+
 
     saveResponses();
   }, []);
