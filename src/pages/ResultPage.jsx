@@ -64,6 +64,8 @@ export default function ResultPage() {
     }));
     setAnsweredQuestions(answeredSummary);
 
+    console.log('📌 ResultPage에서 질문 객체:', knowledgeQuestions?.[0]);
+
     // ✅ 1. 점수 저장
     fetch('https://security-awareness-api.onrender.com/final-results', {
       method: 'POST',
