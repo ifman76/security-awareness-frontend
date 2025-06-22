@@ -27,7 +27,7 @@ export default function QuestionCard({ questions, onSubmit }) {
 
     const choiceText = choices[choiceIndex];
 
-/*
+
     fetch("https://security-awareness-api.onrender.com/responses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -39,7 +39,7 @@ export default function QuestionCard({ questions, onSubmit }) {
         answer_index: choiceIndex + 1
       })
     }).catch(err => console.error("응답 저장 실패:", err));
-*/
+
   };
 
   const handleNext = () => {
