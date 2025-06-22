@@ -39,6 +39,12 @@ export default function KnowledgePage() {
         ];
 
         console.log("✅ 선택된 질문:", selected);
+        selected.forEach((q, idx) => {
+          if (q.type === 'O/X') {
+            console.log(`🧪 O/X 질문 #${idx + 1}:`, q);
+          }
+        });
+
         setQuestions(selected);
         setLoading(false);
       })
