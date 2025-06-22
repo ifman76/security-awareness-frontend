@@ -105,28 +105,29 @@ export default function ResultPage() {
       sections.forEach(({ name, questions, answers }) => {
         answers?.forEach((ans, idx) => {
           const q = questions?.[idx];
-          if (!q || ans == null) return;
+          if (!q || typeof ans !== 'number' || isNaN(ans)) return;
 
           let choiceText = '무응답';
-          if (typeof ans === 'number') {
-            if (q.type === 'O/X') {
-              choiceText = ['O', 'X'][ans] || '무응답';
-            } else {
-              const choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
-              choiceText = choices[ans] || '무응답';
-            }
+
+          if (q.type === 'O/X') {
+            choiceText = ['O', 'X'][ans] || '무응답';
+          } else {
+            const choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+            choiceText = choices[ans] || '무응답';
           }
 
           responses.push({
             participant_id: participantId,
             section: name,
-            question: q.no || q.id || `Q-${idx + 1}`,
+            question: typeof q.no === 'string' ? q.no : q.id || `Q-${idx + 1}`,
             answer: choiceText,
-            answer_index: typeof ans === 'number' ? ans : -1,
+            answer_index: ans,
             timestamp: new Date().toISOString()
           });
         });
       });
+
+      console.log("📦 최종 responses 전송 데이터:", JSON.stringify(responses, null, 2));
 
       try {
         const res = await fetch('https://security-awareness-api.onrender.com/responses', {
@@ -137,13 +138,13 @@ export default function ResultPage() {
         if (res.ok) {
           console.log('✅ responses 저장 완료');
         } else {
-          console.error('❌ responses 저장 실패:', res.statusText);
+          const errText = await res.text();
+          console.error('❌ responses 저장 실패:', res.status, errText);
         }
       } catch (err) {
         console.error('❌ responses 저장 실패:', err);
       }
     };
-
 
     saveResponses();
   }, []);
