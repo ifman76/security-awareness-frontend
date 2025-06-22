@@ -16,6 +16,8 @@ export default function KnowledgePage() {
         console.log("📌 전체 질문 데이터:", data);
 
         const knowledgeQuestions = data.filter(q => q.section === 'Knowledge');
+        // ✅ 분류 전 샘플 질문 로그
+        console.log("📦 분류 전 샘플 질문:", knowledgeQuestions[0]);
 
         const grouped = {
           GPT_Low: [], GPT_Medium: [], GPT_High: [],
@@ -26,6 +28,10 @@ export default function KnowledgePage() {
           const key = `${q.source}_${q.difficulty}`;
           if (grouped[key]) grouped[key].push(q);
         });
+
+         // ✅ 분류 후 샘플 확인 로그
+        console.log("📦 분류 후 Human_Low 샘플:", grouped.Human_Low[0]);
+
 
         const getRandom = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
 
