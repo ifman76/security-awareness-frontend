@@ -114,25 +114,20 @@ export default function ResultPage() {
           const q = questions?.[idx];
           if (!q || typeof ans !== 'number' || isNaN(ans)) return;
 
-          let choiceText = '무응답';
-
-          if (q.type === 'O/X') {
-            choiceText = ['O', 'X'][ans] || '무응답';
-          } else {
-            const choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
-            choiceText = choices[ans] || '무응답';
-          }
+          const selectedChoice = ans + 1;          // 1~5
+          const correctChoice = q.answer_index;    // 정답: 질문 객체에 들어 있음
 
           responses.push({
             participant_id: participantId,
             section: name,
-            no: q.no || q.id || `Q-${idx + 1}`,  // ✅ 필드명 변경!
-            answer: choiceText,
-            answer_index: ans,
+            no: q.no || q.id || `Q-${idx + 1}`,
+            answer: selectedChoice,                // 참여자가 고른 번호
+            answer_index: correctChoice,           // 정답 번호
             timestamp: new Date().toISOString()
           });
         });
       });
+
 
       console.log("📦 최종 responses 전송 데이터:", JSON.stringify(responses, null, 2));
 
