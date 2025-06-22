@@ -36,8 +36,9 @@ export default function QuestionCard({ questions, onSubmit }) {
         answer_index: choiceIndex + 1
       })
     }).catch(err => console.error("응답 저장 실패:", err));
-  };
 */
+  };
+
   const handleNext = () => {
     if (current < questions.length - 1) {
       setCurrent(current + 1);
