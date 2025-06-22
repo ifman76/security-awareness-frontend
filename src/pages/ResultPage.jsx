@@ -96,59 +96,54 @@ export default function ResultPage() {
     const saveResponses = async () => {
       const responses = [];
 
-      knowledgeAnswers.forEach((ans, idx) => {
-        const q = knowledgeQuestions[idx];
-        if (ans != null && q) {
-          responses.push({
-            participant_id: participantId,
-            section: 'Knowledge',
-            question: q.no,
-            answer: typeof ans === 'number' && q[`choice${ans + 1}`] ? q[`choice${ans + 1}`] : '무응답',
-            answer_index: typeof ans === 'number' ? ans : -1,
-            timestamp: new Date().toISOString()
-          });
-        }  
-      });
+      const sections = [
+        { name: 'Knowledge', questions: knowledgeQuestions, answers: knowledgeAnswers },
+        { name: 'Device', questions: deviceQuestions, answers: deviceAnswers },
+        { name: 'Behavior', questions: behaviorQuestions, answers: behaviorAnswers }
+      ];
 
-      deviceAnswers.forEach((ans, idx) => {
-        const q = deviceQuestions[idx];
-        if (ans != null && q) {
-          responses.push({
-            participant_id: participantId,
-            section: 'Device',
-            question: q.no,
-            answer: typeof ans === 'number' && q[`choice${ans + 1}`] ? q[`choice${ans + 1}`] : '무응답',
-            answer_index: typeof ans === 'number' ? ans : -1,
-            timestamp: new Date().toISOString()
-          });
-        }
-      });
+      sections.forEach(({ name, questions, answers }) => {
+        answers?.forEach((ans, idx) => {
+          const q = questions?.[idx];
+          if (!q || ans == null) return;
 
-      behaviorAnswers.forEach((ans, idx) => {
-        const q = behaviorQuestions[idx];
-        if (ans != null && q) {
+          let choiceText = '무응답';
+          if (typeof ans === 'number') {
+            if (q.type === 'O/X') {
+              choiceText = ['O', 'X'][ans] || '무응답';
+            } else {
+              const choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
+              choiceText = choices[ans] || '무응답';
+            }
+          }
+
           responses.push({
             participant_id: participantId,
-            section: 'Behavior',
-            question: q.no,
-            answer: typeof ans === 'number' && q[`choice${ans + 1}`] ? q[`choice${ans + 1}`] : '무응답',
+            section: name,
+            question: q.no || q.id || `Q-${idx + 1}`,
+            answer: choiceText,
             answer_index: typeof ans === 'number' ? ans : -1,
             timestamp: new Date().toISOString()
           });
-        }
+        });
       });
 
       try {
-        await fetch('https://security-awareness-api.onrender.com/responses', {
+        const res = await fetch('https://security-awareness-api.onrender.com/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ responses }),
+          body: JSON.stringify({ responses })
         });
-        console.log('✅ responses 저장 완료');
+        if (res.ok) {
+          console.log('✅ responses 저장 완료');
+        } else {
+          console.error('❌ responses 저장 실패:', res.statusText);
+        }
       } catch (err) {
         console.error('❌ responses 저장 실패:', err);
       }
     };
+
 
     saveResponses();
   }, []);
