@@ -96,7 +96,8 @@ export default function ParticipantInfoPage() {
 
         {/* AI 사용 경험 */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">생성형 AI 사용 경험이 있습니까? / Experience with Generative AI</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">생성형 AI 사용 경험이 있습니까? 
+            <p>Experience with Generative AI</p></label>
            
           <div className="space-x-4 text-sm">
             <label>
@@ -126,7 +127,9 @@ export default function ParticipantInfoPage() {
 
         {/* 자기평가 */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">본인의 보안 인식 수준 (최저1~최고5점 자기평가) / Your own security awareness level (1~5)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            본인이 스스로 생각하는 보안 인식 수준 점수는 몇점입니까? (5점만점 자기평가)  
+            <p>Your own security awareness level (1~5)</p></label>
           <div className="space-x-2 text-sm">
             {[1, 2, 3, 4, 5].map((val) => (
               <label key={val}>
