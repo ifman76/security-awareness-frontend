@@ -98,37 +98,26 @@ export default function ParticipantInfoPage() {
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">생성형 AI 사용 경험이 있습니까? 
             <p>Experience with Generative AI</p></label>
-           
-          <div className="space-x-4 text-sm">
-            <label>
-              <input
-                type="radio"
-                name="aiExperience"
-                value="yes"
-                checked={aiExperience === 'yes'}
-                onChange={() => setAiExperience('yes')}
-                className="mr-1"
-              />
-              예 / Yes
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="aiExperience"
-                value="no"
-                checked={aiExperience === 'no'}
-                onChange={() => setAiExperience('no')}
-                className="ml-4 mr-1"
-              />
-              아니오 / No
-            </label>
-          </div>
+            <select
+            value={occupation}
+            onChange={(e) => setOccupation(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+          >
+            <option value="">선택하세요 / Select</option>
+            <option value="1">거의 사용하지 않음 / Hardly ever used</option>
+            <option value="2">가끔 검색이나 번역용으로 사용 / Sometimes used only for searching or translation</option>
+            <option value="3">학습/정보 정리에 활용 / Useful for learning/organizing information</option>
+            <option value="4">업무나 콘텐츠 작성에 적극 활용 / Actively utilize in work and content creation</option>
+            <option value="5">스크립트 작성, 분석 등 전문가 수준 활용 / Expert-level utilization of script writing, analysis, etc.</option>
+          </select>
         </div>
+
 
         {/* 자기평가 */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            본인이 스스로 생각하는 보안 인식 수준 점수는 몇점입니까? (5점만점 자기평가)  
+            본인이 스스로 생각하는 보안 인식 수준 점수는 몇점입니까? 
+            <p>(5점만점 자기평가)</p>  
             <p>Your own security awareness level (1~5)</p></label>
           <div className="space-x-2 text-sm">
             {[1, 2, 3, 4, 5].map((val) => (
