@@ -27,7 +27,8 @@ export default function StartPage() {
         <h1 className="text-xl font-bold mb-4">귀하의 보안인식 수준을 측정합니다</h1>
         <p className="text-base text-gray-700 leading-relaxed mb-2">
           이 실험은 생성형 AI 시대의 보안인식 수준을 측정하기 위한 것입니다.
-          총 3개의 영역(지식, 기기, 호기심) 24문항을 측정하며, 예상 소요시간은 5분입니다.
+          3개의 영역(지식, 기기, 호기심)에서 <p></p>
+          총24문항을 측정하며, 예상 소요시간은 5분입니다.
         </p>
         
         <p className="text-base text-gray-700 leading-relaxed mb-2">
@@ -36,8 +37,6 @@ export default function StartPage() {
         </p>
         <p className="text-sm text-gray-500 mt-4">
           It evaluates three key areas: Knowledge, Device Ownership, and Curiosity.
-        </p>
-        <p className="text-sm text-gray-500">
           It measures 24 questions and takes an estimated 5 minutes to complete.
         </p>
         <p className="text-sm text-gray-500">
