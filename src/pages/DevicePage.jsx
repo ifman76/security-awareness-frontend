@@ -74,11 +74,19 @@ export default function DevicePage() {
     });
   };
 
-  const categories = [...new Set(devices.map(d => d.category))];
-  const makers = devices.filter(d => d.category === selectedCategory).map(d => d.maker);
-  const uniqueMakers = [...new Set(makers)];
-  const products = devices.filter(d => d.category === selectedCategory && d.maker === selectedMaker);
+  const categories = [...new Set(devices.map(d => d.category))].sort();
 
+  const makers = devices.filter(d => d.category === selectedCategory).map(d => d.maker);
+  const uniqueMakers = [...new Set(makers)].sort();
+
+  const products = devices
+    .filter(d => d.category === selectedCategory && d.maker === selectedMaker)
+    .sort((a, b) => {
+      const numA = parseInt(a.product.match(/\d+/)?.[0] || '0', 10);
+      const numB = parseInt(b.product.match(/\d+/)?.[0] || '0', 10);
+      return numA - numB;
+    });
+    
   return (
     <div className="p-6">
       {!surveyDone ? (
