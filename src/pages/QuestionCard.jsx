@@ -68,7 +68,7 @@ export default function QuestionCard({ questions, onSubmit }) {
   const progressPercent = Math.round(((current + 1) / questions.length) * 100);
 
   return (
-    <div className="max-w-md mx-auto p-4 text-center">
+    <div className="max-w-md mx-auto p-4 text-left">
       <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
         <div
           className="bg-blue-600 h-2 rounded-full transition-all duration-300"
