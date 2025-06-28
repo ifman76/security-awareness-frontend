@@ -98,7 +98,7 @@ export default function QuestionCard({ questions, onSubmit }) {
         </div>
       </div>
 
-      <div className="mt-6 flex justify-between items-center">
+      <div className="mt-6 flex justify-between items-left">
         <button
           onClick={handleBack}
           disabled={current === 0}
