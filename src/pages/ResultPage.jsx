@@ -17,14 +17,30 @@ export default function ResultPage() {
 
   const { setAnsweredQuestions } = useSurvey();
 
-  const getScore = (answers, questions) => {
+ const getWeightedScore = (answers, questions) => {
     if (!answers || !questions || questions.length === 0) return { score: 0, correct: 0, total: 0 };
+
+    const difficultyWeight = {
+      Low: 1,
+      Medium: 2,
+      High: 3
+    };
+
+    let weightedCorrect = 0;
+    let weightedTotal = 0;
     let correct = 0;
+
     answers.forEach((a, idx) => {
       const q = questions[idx];
-      if (a + 1 === q.answer_index) correct++;
+      const weight = difficultyWeight[q.difficulty?.trim()] || 1;
+      weightedTotal += weight;
+      if (a + 1 === q.answer_index) {
+        weightedCorrect += weight;
+        correct++;
+      }
     });
-    const score = Math.round((correct / questions.length) * 100);
+
+    const score = Math.round((weightedCorrect / weightedTotal) * 100);
     return { score, correct, total: questions.length };
   };
 
@@ -43,9 +59,9 @@ export default function ResultPage() {
   };
 
   const { score: knowledgeScore, correct: knowledgeCorrect, total: knowledgeTotal } =
-    getScore(knowledgeAnswers, knowledgeQuestions);
+    getWeightedScore(knowledgeAnswers, knowledgeQuestions);
   const { score: deviceScore, correct: deviceCorrect, total: deviceTotal } =
-    getScore(deviceAnswers, deviceQuestions);
+    getWeightedScore(deviceAnswers, deviceQuestions);
   const behaviorScore = getCuriosityScore(behaviorAnswers, behaviorQuestions);
   const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
 
@@ -145,6 +161,7 @@ export default function ResultPage() {
       console.log("📦 최종 responses 전송 데이터:", JSON.stringify(responses, null, 2));
 
       try {
+        console.log("📦 전송될 payload:", JSON.stringify({ responses }, null, 2));
         const res = await fetch('https://security-awareness-api.onrender.com/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
