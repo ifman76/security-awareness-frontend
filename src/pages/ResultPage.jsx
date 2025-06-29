@@ -66,11 +66,6 @@ export default function ResultPage() {
 
   // ✅ 인증기기 보유 여부 → 보너스 점수 계산
   // 🔧 문자열 정규화 함수: 공백 제거 + 소문자화
-  console.log("🎯 ownedDevices:", ownedDevices);
-  console.log("🎯 certifiedDevices:", certifiedDevices);
-  console.log("🧪 normalize(owned):", ownedDevices.map(normalize));
-  console.log("🧪 normalize(certified):", certifiedDevices.map(normalize));
-  console.log("✅ matchedDevices:", matchedDevices);
 
 
   const normalize = (str) =>
@@ -81,7 +76,13 @@ export default function ResultPage() {
   ) || [];
 
   console.log("🎯 ownedDevices:", ownedDevices);
-  console.log("🎯 certifiedDevices (products):", certifiedDevices.map(cd => cd.product));
+  console.log("🎯 certifiedDevices:", certifiedDevices);
+  console.log("🧪 normalize(owned):", ownedDevices.map(normalize));
+  console.log("🧪 normalize(certified):", certifiedDevices.map(normalize));
+  console.log("✅ matchedDevices:", matchedDevices);
+
+  console.log("🎯 ownedDevices:", ownedDevices);
+  console.log("🎯 certifiedDevices (products):", certifiedDevices.map(cd => cd));
   console.log("✅ matchedDevices:", matchedDevices);
 
   const bonusScore = matchedDevices.length > 0 ? 5 : 0;
