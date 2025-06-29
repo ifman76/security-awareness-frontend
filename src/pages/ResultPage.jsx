@@ -63,8 +63,21 @@ export default function ResultPage() {
   const { score: deviceScore, correct: deviceCorrect, total: deviceTotal } =
     getWeightedScore(deviceAnswers, deviceQuestions);
   const behaviorScore = getCuriosityScore(behaviorAnswers, behaviorQuestions);
-  const totalScore = Math.round((knowledgeScore + deviceScore + behaviorScore) / 3);
 
+  // ✅ 인증기기 보유 여부 → 보너스 점수 계산
+  const matchedDevices = ownedDevices?.filter(d => certifiedDevices?.includes(d)) || [];
+  const bonusScore = matchedDevices.length > 0 ? 5 : 0;
+
+  // ✅ 각 점수 가중치 반영 (Knowledge: 40, Device: 40, Curiosity: 20)
+  const weightedKnowledge = Math.round((knowledgeScore / 100) * 40);
+  const weightedDevice = Math.round((deviceScore / 100) * 40);
+  const weightedBehavior = Math.round((behaviorScore / 100) * 20);
+
+  // ✅ 최종 점수 계산 (보너스 포함)
+  const totalScore = weightedKnowledge + weightedDevice + weightedBehavior + bonusScore;
+
+
+  
   useEffect(() => {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
     const participantId = participant.id || 'anonymous';
@@ -188,6 +201,11 @@ export default function ResultPage() {
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">총점 (Total Score)</h2>
         <p className="text-3xl font-bold text-orange-600">{totalScore}점</p>
+        {bonusScore > 0 && (
+          <p className="text-sm text-gray-500 mt-1">
+            보너스 점수 +{bonusScore} (인증 기기 보유: {matchedDevices.join(', ')})
+          </p>
+        )}
       </div>
 
       {/* 레이더 차트 */}
@@ -198,15 +216,23 @@ export default function ResultPage() {
             src={`https://quickchart.io/chart?c={
               type:'radar',
               data:{
-                labels:['Knowledge','Device','Curiosity'],
+                labels:['Knowledge (40)', 'Device (40)', 'Curiosity (20)'],
                 datasets:[{
                   label:'Score',
-                  data:[${knowledgeScore},${deviceScore},${behaviorScore}]
+                  data:[${weightedKnowledge},${weightedDevice},${weightedBehavior}],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor:'rgb(255, 99, 132)'
                 }]
+              },
+              options: {
+                scales: {
+                  r: {
+                    suggestedMax: 40
+                  }
+                }
               }
             }`}
             alt="Radar Chart"
-            className="w-full rounded-lg"
           />
         </div>
       </div>
