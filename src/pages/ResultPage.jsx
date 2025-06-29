@@ -242,6 +242,13 @@ export default function ResultPage() {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
+      {/* 총평 */}
+      <div className="bg-white shadow-xl rounded-2xl p-6">
+        <h2 className="text-lg font-semibold mb-3">종료</h2>
+        <p className="text-sm text-gray-700">
+          설문이 종료되었습니다. 참여해주셔서 감사합니다.
+        </p>
+      </div>
       {/* 총점 카드 */}
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">총점 (Total Score)</h2>
@@ -254,6 +261,7 @@ export default function ResultPage() {
       </div>
 
       {/* 레이더 차트 */}
+
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Radar Chart</h2>
         <div className="mt-4">
@@ -262,19 +270,19 @@ export default function ResultPage() {
       </div>
 
       {/* 개별 점수 */}
-      <h1 className="text-2xl font-bold mb-6 text-center">Security Awareness Result</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">분야별 점수</h1>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Knowledge</h2>
         <p className="text-3xl font-bold text-blue-600">
-          {knowledgeScore}점 ({knowledgeCorrect} / {knowledgeTotal})
+          {weightedKnowledge} / 40점
         </p>
       </div>
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Device</h2>
         <p className="text-3xl font-bold text-green-600">
-          {deviceScore}점 ({deviceCorrect} / {deviceTotal})
+         {weightedDevice} / 40점
         </p>
         <p className="text-sm text-gray-500 mt-2">
           보유 기기: {ownedDevices?.join(', ') || '선택 안함'}
@@ -283,17 +291,13 @@ export default function ResultPage() {
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Curiosity</h2>
-        <p className="text-3xl font-bold text-purple-600">{behaviorScore}점</p>
+        <p className="text-3xl font-bold text-purple-600">
+          {weightedBehavior} / 20점
+        </p>
         <p className="text-sm text-gray-500 mt-2">리커트 5점 척도 기반 점수화</p>
       </div>
 
-      {/* 총평 */}
-      <div className="bg-white shadow-xl rounded-2xl p-6">
-        <h2 className="text-lg font-semibold mb-3">종료</h2>
-        <p className="text-sm text-gray-700">
-          설문이 종료되었습니다. 참여해주셔서 감사합니다.
-        </p>
-      </div>
+      
     </div>
   );
 }
