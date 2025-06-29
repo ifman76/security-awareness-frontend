@@ -72,7 +72,7 @@ export default function ResultPage() {
     typeof str === 'string' ? str.toLowerCase().replace(/[\s\-()]/g, '').trim() : '';
 
   const ownedNormalized = (ownedDevices || []).map(normalize);
-  const certifiedNormalized = (certifiedDevices || []).map(normalize);
+
 
   // certifiedDevices가 객체 형태일 경우 product 이름만 추출
   const certifiedProductNames = (certifiedDevices || []).map(cd => {
