@@ -77,7 +77,7 @@ export default function ResultPage() {
     typeof str === 'string' ? str.toLowerCase().replace(/[\s\-()]/g, '').trim() : '';
 
   const matchedDevices = ownedDevices?.filter(od =>
-    certifiedDevices?.some(cd => normalize(cd.product) === normalize(od))
+    certifiedDevices?.some(cd => normalize(cd) === normalize(od))
   ) || [];
 
   console.log("🎯 ownedDevices:", ownedDevices);
