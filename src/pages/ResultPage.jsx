@@ -274,9 +274,9 @@ export default function ResultPage() {
 
       {/* 총평 */}
       <div className="bg-white shadow-xl rounded-2xl p-6">
-        <h2 className="text-lg font-semibold mb-3">총평</h2>
+        <h2 className="text-lg font-semibold mb-3">종료</h2>
         <p className="text-sm text-gray-700">
-          본 결과는 지식, 기기, 행동 기반의 보안 인식 수준을 평가한 것입니다.
+          설문이 종료되었습니다. 참여해주셔서 감사합니다.
         </p>
       </div>
     </div>
