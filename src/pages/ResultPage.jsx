@@ -72,13 +72,17 @@ export default function ResultPage() {
   console.log("🧪 normalize(certified):", certifiedDevices.map(normalize));
   console.log("✅ matchedDevices:", matchedDevices);
 
+
   const normalize = (str) =>
     typeof str === 'string' ? str.toLowerCase().replace(/[\s\-()]/g, '').trim() : '';
 
-  // ✅ 인증 기기 보유 여부 계산 (정규화 후 비교)
-  const matchedDevices = (ownedDevices || []).filter(od =>
-    (certifiedDevices || []).some(cd => normalize(cd) === normalize(od))
-  );
+  const matchedDevices = ownedDevices?.filter(od =>
+    certifiedDevices?.some(cd => normalize(cd.product) === normalize(od))
+  ) || [];
+
+  console.log("🎯 ownedDevices:", ownedDevices);
+  console.log("🎯 certifiedDevices (products):", certifiedDevices.map(cd => cd.product));
+  console.log("✅ matchedDevices:", matchedDevices);
 
   const bonusScore = matchedDevices.length > 0 ? 5 : 0;
   // ✅ 각 점수 가중치 반영 (Knowledge: 40, Device: 40, Curiosity: 20)
