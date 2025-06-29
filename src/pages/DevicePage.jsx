@@ -62,6 +62,10 @@ export default function DevicePage() {
   };
 
   const handleFinalSubmit = () => {
+    const certifiedProductNames = devices
+      .filter(d => d.cc_certified)          // 인증된 기기만 필터
+      .map(d => d.product);
+      
     navigate('/curiosity', {
       state: {
         knowledgeAnswers,
@@ -69,7 +73,7 @@ export default function DevicePage() {
         deviceAnswers,
         deviceQuestions: questions,
         ownedDevices,
-        certifiedDevices: devices,
+        certifiedDevices: certifiedProductNames,
       },
     });
   };
@@ -86,7 +90,7 @@ export default function DevicePage() {
       const numB = parseInt(b.product.match(/\d+/)?.[0] || '0', 10);
       return numA - numB;
     });
-    
+
   return (
     <div className="p-6">
       {!surveyDone ? (
