@@ -106,11 +106,13 @@ export default function ResultPage() {
         occupation: participant.occupation || '',
         aiExperience: participant.aiExperience || '',
         selfAssessment: participant.selfAssessment || '',
-        knowledgeScore,
-        deviceScore,
-        behaviorScore,
+        knowledgeScore: weightedKnowledge,
+        deviceScore: weightedDevice,
+        behaviorScore: weightedBehavior,
+        bonusScore,
         totalScore,
-        ownedDevices: ownedDevices?.join(', ') || '',
+        matchedCertifiedDevices: matchedDevices,
+        ownedDevices,
         timestamp: new Date().toISOString()
       })
     }).then(res => {
