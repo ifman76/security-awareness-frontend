@@ -99,6 +99,10 @@ export default function ResultPage() {
   // ✅ 최종 점수 계산 (보너스 포함)
   const totalScore = weightedKnowledge + weightedDevice + weightedBehavior + bonusScore;
 
+  const percentKnowledge = (weightedKnowledge / 40) * 100;
+  const percentDevice = (weightedDevice / 40) * 100;
+  const percentBehavior = (weightedBehavior / 20) * 100;
+
   const chartConfig = {
     type: 'radar',
     data: {
@@ -244,11 +248,10 @@ export default function ResultPage() {
     <div className="p-6 max-w-xl mx-auto">
       {/* 총평 */}
       <div className="bg-white shadow-xl rounded-2xl p-6">
-        <h2 className="text-lg font-semibold mb-3">종료</h2>
-        <p className="text-sm text-gray-700">
-          설문이 종료되었습니다. 참여해주셔서 감사합니다.
-        </p>
+        <h2 className="text-lg font-semibold mb-3">설문이 종료되었습니다. 참여해주셔서 감사합니다.</h2>
+  
       </div>
+
       {/* 총점 카드 */}
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">총점 (Total Score)</h2>
@@ -265,7 +268,32 @@ export default function ResultPage() {
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Radar Chart</h2>
         <div className="mt-4">
-          <img src={chartUrl} alt="Radar Chart" />
+          <img
+            src={`https://quickchart.io/chart?c={
+              type:'radar',
+              data:{
+                labels:['Knowledge','Device','Curiosity'],
+                datasets:[{
+                  label:'Score',
+                  data:[${percentKnowledge},${percentDevice},${percentBehavior}],
+                  backgroundColor:'rgba(255, 99, 132, 0.2)',
+                  borderColor:'rgb(255, 99, 132)',
+                  pointBackgroundColor:'rgb(255, 99, 132)'
+                }]
+              },
+              options: {
+                scales: {
+                  r: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    ticks: {
+                      stepSize: 20
+                    }
+                  }
+                }
+              }
+            }`}
+          />
         </div>
       </div>
 
