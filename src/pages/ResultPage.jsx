@@ -266,6 +266,7 @@ export default function ResultPage() {
       {/* 레이더 차트 */}
 
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
+        {/*
         <h2 className="text-lg font-semibold mb-2">Radar Chart</h2>
         <div className="mt-4">
           <img
@@ -295,6 +296,7 @@ export default function ResultPage() {
             }`}
           />
         </div>
+        */}
       </div>
 
       {/* 개별 점수 */}
