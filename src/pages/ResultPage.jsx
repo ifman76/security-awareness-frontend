@@ -71,21 +71,26 @@ export default function ResultPage() {
   const normalize = (str) =>
     typeof str === 'string' ? str.toLowerCase().replace(/[\s\-()]/g, '').trim() : '';
 
-  const matchedDevices = ownedDevices?.filter(od =>
-    certifiedDevices?.some(cd => normalize(cd) === normalize(od))
-  ) || [];
+  const ownedNormalized = (ownedDevices || []).map(normalize);
+  const certifiedNormalized = (certifiedDevices || []).map(normalize);
 
-  console.log("🎯 ownedDevices:", ownedDevices);
-  console.log("🎯 certifiedDevices:", certifiedDevices);
-  console.log("🧪 normalize(owned):", ownedDevices.map(normalize));
-  console.log("🧪 normalize(certified):", certifiedDevices.map(normalize));
-  console.log("✅ matchedDevices:", matchedDevices);
+  // certifiedDevices가 객체 형태일 경우 product 이름만 추출
+  const certifiedProductNames = (certifiedDevices || []).map(cd => {
+    return typeof cd === 'string' ? cd : cd.product || '';
+  });
+  const certifiedNormalized = certifiedProductNames.map(normalize);
 
-  console.log("🎯 ownedDevices:", ownedDevices);
-  console.log("🎯 certifiedDevices (products):", certifiedDevices.map(cd => cd));
+
+  const matchedDevices = (ownedDevices || []).map(normalize).filter(od =>
+    certifiedNormalized.includes(od)
+  );
+
+  console.log("✅ normalizedOwnedDevices:", ownedNormalized);
+  console.log("✅ normalizedCertifiedDevices:", certifiedNormalized);
   console.log("✅ matchedDevices:", matchedDevices);
 
   const bonusScore = matchedDevices.length > 0 ? 5 : 0;
+
   // ✅ 각 점수 가중치 반영 (Knowledge: 40, Device: 40, Curiosity: 20)
   const weightedKnowledge = Math.round((knowledgeScore / 100) * 40);
   const weightedDevice = Math.round((deviceScore / 100) * 40);
@@ -94,7 +99,27 @@ export default function ResultPage() {
   // ✅ 최종 점수 계산 (보너스 포함)
   const totalScore = weightedKnowledge + weightedDevice + weightedBehavior + bonusScore;
 
+  const chartConfig = {
+    type: 'radar',
+    data: {
+      labels: ['Knowledge (40)', 'Device (40)', 'Curiosity (20)'],
+      datasets: [{
+        label: 'Score',
+        data: [weightedKnowledge, weightedDevice, weightedBehavior],
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgb(255, 99, 132)'
+      }]
+    },
+    options: {
+      scales: {
+        r: {
+          suggestedMax: 40
+        }
+      }
+    }
+  };
 
+  const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
   
   useEffect(() => {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
@@ -232,28 +257,7 @@ export default function ResultPage() {
       <div className="bg-white shadow-xl rounded-2xl p-6 mb-6">
         <h2 className="text-lg font-semibold mb-2">Radar Chart</h2>
         <div className="mt-4">
-          <img
-            src={`https://quickchart.io/chart?c={
-              type:'radar',
-              data:{
-                labels:['Knowledge (40)', 'Device (40)', 'Curiosity (20)'],
-                datasets:[{
-                  label:'Score',
-                  data:[${weightedKnowledge},${weightedDevice},${weightedBehavior}],
-                  backgroundColor:'rgba(255, 99, 132, 0.2)',
-                  borderColor:'rgb(255, 99, 132)'
-                }]
-              },
-              options: {
-                scales: {
-                  r: {
-                    suggestedMax: 40
-                  }
-                }
-              }
-            }`}
-            alt="Radar Chart"
-          />
+          <img src={chartUrl} alt="Radar Chart" />
         </div>
       </div>
 
