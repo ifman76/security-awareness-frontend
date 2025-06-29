@@ -66,7 +66,8 @@ export default function ResultPage() {
 
   // ✅ 인증기기 보유 여부 → 보너스 점수 계산
   // 🔧 문자열 정규화 함수: 공백 제거 + 소문자화
-  const normalize = (str) => str?.toLowerCase().replace(/[\s\-()]/g, '').trim();
+  const normalize = (str) =>
+    typeof str === 'string' ? str.toLowerCase().replace(/[\s\-()]/g, '').trim() : '';
 
   // ✅ 인증 기기 보유 여부 계산 (정규화 후 비교)
   const matchedDevices = ownedDevices?.filter(od =>
@@ -117,8 +118,8 @@ export default function ResultPage() {
         behaviorScore: weightedBehavior,
         bonusScore,
         totalScore,
-        matchedCertifiedDevices: matchedDevices,
-        ownedDevices,
+        ownedDevices: ownedDevices?.join(', ') || '',
+        matchedCertifiedDevices: matchedDevices?.join(', ') || '',
         timestamp: new Date().toISOString()
       })
     }).then(res => {
