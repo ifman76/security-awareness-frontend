@@ -65,7 +65,7 @@ export default function DevicePage() {
     const certifiedProductNames = devices
       .filter(d => d.cc_certified)          // 인증된 기기만 필터
       .map(d => d.product);
-      
+
     navigate('/curiosity', {
       state: {
         knowledgeAnswers,
@@ -184,7 +184,7 @@ export default function DevicePage() {
 
               <button
                 onClick={handleFinalSubmit}
-                className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+                className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm whitespace-nowrap"
               >
                 다음 / Next
               </button>
