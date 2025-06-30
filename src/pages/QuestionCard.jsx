@@ -114,7 +114,7 @@ export default function QuestionCard({ questions, onSubmit }) {
         <button
           onClick={handleNext}
           disabled={answers[current] === null}
-          className={`px-4 py-2 rounded-lg text-white text-sm font-medium 
+          className={`px-4 py-2 rounded-lg text-white text-sm font-medium whitespace-nowrap 
             ${answers[current] === null ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
           {current === questions.length - 1 ? '제출/Submit' : '다음/Next'}
