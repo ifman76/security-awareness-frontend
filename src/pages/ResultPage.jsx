@@ -155,7 +155,7 @@ export default function ResultPage() {
   
   useEffect(() => {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
-    const participantId = participant.id || 'anonymous';
+    const participantId = participant.id;
 
     const allQuestions = [
       ...(knowledgeQuestions || []),
