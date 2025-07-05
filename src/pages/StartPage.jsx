@@ -12,7 +12,7 @@ export default function StartPage() {
       .then(res => res.json())
       .then(data => {
         localStorage.setItem('cachedKnowledgeQuestions', JSON.stringify(data));
-        console.log('✅ Knowledge 질문 미리 캐싱 완료');
+        //console.log('✅ Knowledge 질문 미리 캐싱 완료');
       })
       .catch(err => console.error('❌ Knowledge 질문 캐싱 실패:', err));
   }, []);

@@ -85,9 +85,9 @@ export default function ResultPage() {
     certifiedNormalized.includes(od)
   );
 
-  console.log("✅ normalizedOwnedDevices:", ownedNormalized);
-  console.log("✅ normalizedCertifiedDevices:", certifiedNormalized);
-  console.log("✅ matchedDevices:", matchedDevices);
+  //console.log("✅ normalizedOwnedDevices:", ownedNormalized);
+  //console.log("✅ normalizedCertifiedDevices:", certifiedNormalized);
+  //console.log("✅ matchedDevices:", matchedDevices);
 
   const bonusScore = matchedDevices.length > 0 ? 5 : 0;
 
@@ -168,7 +168,7 @@ export default function ResultPage() {
     }));
     setAnsweredQuestions(answeredSummary);
 
-    console.log('📌 ResultPage에서 질문 객체:', knowledgeQuestions?.[0]);
+    //console.log('📌 ResultPage에서 질문 객체:', knowledgeQuestions?.[0]);
 
     // ✅ 1. 점수 저장
     fetch('https://security-awareness-api.onrender.com/final-results', {
@@ -192,9 +192,9 @@ export default function ResultPage() {
       })
     }).then(res => {
       if (res.ok) {
-        console.log('✅ 점수 저장 완료');
+        //console.log('✅ 점수 저장 완료');
       } else {
-        console.error('❌ 점수 저장 실패');
+        //console.error('❌ 점수 저장 실패');
       }
     }).catch(err => console.error('❌ 점수 저장 오류:', err));
 
@@ -229,7 +229,7 @@ export default function ResultPage() {
           if (typeof q.answer_index === 'number') {
             item.answer_index = q.answer_index;
           }
-          console.log("🔍 개별 응답:", item);  
+          //console.log("🔍 개별 응답:", item);  
           responses.push({
             participant_id: participantId,
             section: name,
@@ -244,14 +244,14 @@ export default function ResultPage() {
       // ✅ 응답 수집 후 누락된 항목 확인
       responses.forEach((r, i) => {
         if (!r.no || typeof r.answer !== 'number') {
-          console.warn(`⚠️ ${i + 1}번 응답 누락 또는 오류 - no: ${r.no}, answer: ${r.answer}`);
+          //console.warn(`⚠️ ${i + 1}번 응답 누락 또는 오류 - no: ${r.no}, answer: ${r.answer}`);
         }
       });
 
-      console.log("📦 최종 responses 전송 데이터:", JSON.stringify(responses, null, 2));
+      //console.log("📦 최종 responses 전송 데이터:", JSON.stringify(responses, null, 2));
 
       try {
-        console.log("📦 전송될 payload:", JSON.stringify({ responses }, null, 2));
+        //console.log("📦 전송될 payload:", JSON.stringify({ responses }, null, 2));
         const res = await fetch('https://security-awareness-api.onrender.com/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -8,16 +8,16 @@ export default function KnowledgePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("📌 useEffect 실행됨");
+    //console.log("📌 useEffect 실행됨");
 
     fetch('https://security-awareness-api.onrender.com/questions?section=Knowledge')
       .then((res) => res.json())
       .then((data) => {
-        console.log("📌 전체 질문 데이터:", data);
+        //console.log("📌 전체 질문 데이터:", data);
 
         const knowledgeQuestions = data.filter(q => q.section === 'Knowledge');
         // ✅ 분류 전 샘플 질문 로그
-        console.log("📦 분류 전 샘플 질문:", knowledgeQuestions[0]);
+        //console.log("📦 분류 전 샘플 질문:", knowledgeQuestions[0]);
 
         const grouped = {
           GPT_Low: [], GPT_Medium: [], GPT_High: [],
@@ -30,7 +30,7 @@ export default function KnowledgePage() {
         });
 
          // ✅ 분류 후 샘플 확인 로그
-        console.log("📦 분류 후 Human_Low 샘플:", grouped.Human_Low[0]);
+        //console.log("📦 분류 후 Human_Low 샘플:", grouped.Human_Low[0]);
 
 
         const getRandom = (arr, n) => [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
@@ -44,10 +44,10 @@ export default function KnowledgePage() {
           ...getRandom(grouped.Human_High, 1),
         ];
 
-        console.log("✅ 선택된 질문:", selected);
+        //console.log("✅ 선택된 질문:", selected);
         selected.forEach((q, idx) => {
           if (q.type === 'O/X') {
-            console.log(`🧪 O/X 질문 #${idx + 1}:`, q);
+            //console.log(`🧪 O/X 질문 #${idx + 1}:`, q);
           }
         });
 
@@ -55,7 +55,7 @@ export default function KnowledgePage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("❌ 질문 불러오기 실패:", err);
+        //console.error("❌ 질문 불러오기 실패:", err);
         setLoading(false);
       });
   }, []);

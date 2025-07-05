@@ -13,9 +13,9 @@ export default function QuestionCard({ questions, onSubmit }) {
     setAnswers(updated);
 
     const q = questions[current];
-    console.log('🎯 q 전체:', JSON.stringify(q, null, 2));
-    console.log('🟢 현재 질문:', q);
-    console.log('🟢 선택지:', q.choice1, q.choice2, q.choice3, q.choice4, q.choice5);
+    //console.log('🎯 q 전체:', JSON.stringify(q, null, 2));
+    //console.log('🟢 현재 질문:', q);
+    //console.log('🟢 선택지:', q.choice1, q.choice2, q.choice3, q.choice4, q.choice5);
     
     // ✅ 보기 배열 생성 (객관식 또는 O/X)
     let choices = [];
