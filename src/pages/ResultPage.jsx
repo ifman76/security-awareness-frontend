@@ -157,6 +157,11 @@ export default function ResultPage() {
     const participant = JSON.parse(localStorage.getItem('participant')) || {};
     const participantId = participant.id;
 
+      if (!participantId || !knowledgeAnswers || !deviceAnswers || !behaviorAnswers) {
+        console.warn('❌ 저장 중단: 데이터가 아직 준비되지 않음');
+        return;
+      }
+
     const allQuestions = [
       ...(knowledgeQuestions || []),
       ...(deviceQuestions || []),
