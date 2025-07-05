@@ -84,6 +84,7 @@ export default function CuriosityPage() {
 
 
     // ✅ [본실험용] 최종 결과 서버 저장
+    /*
     try {
       await fetch('https://security-awareness-api.onrender.com/final-results', {
         method: 'POST',
@@ -93,7 +94,7 @@ export default function CuriosityPage() {
     } catch (err) {
       console.error("❌ 결과 저장 중 오류 발생", err);
     }
-
+    */
     // ✅ [본실험용] 결과 페이지로 이동
     navigate('/result', { state: finalPayload });
 
