@@ -127,6 +127,9 @@ export default function AdminPage() {
       <AdminNav />
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">🔐 관리자 페이지</h1>
+        <div className="text-sm text-gray-600">
+          전체 참여자 수: <span className="font-semibold text-blue-700">{allResults.length}</span>명
+        </div>
         <button
           onClick={() => {
             localStorage.removeItem('admin_logged_in');
