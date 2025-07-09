@@ -3,14 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 export default function StartPage() {
   const navigate = useNavigate();
+  const [alreadyParticipated, setAlreadyParticipated] = useState(false);
 
   // 
 
   useEffect(() => {
     // 이미 참여한 경우 홈 또는 안내 페이지로 리디렉션
-    if (localStorage.getItem('hasParticipated') === 'true') {
+    const participated = localStorage.getItem('hasParticipated') === 'true';
+    if (participated) {
       alert('이미 참여하셨습니다. 재참여는 제한됩니다. You have already participated. Re-participation is restricted.');
       //navigate('/');  // 또는 안내용 '/already-participated'
+      setAlreadyParticipated(true);
       return;
     }
 
@@ -26,6 +29,7 @@ export default function StartPage() {
 
   // 2. 시작 버튼 → 참여 상태 기록
   const handleStart = () => {
+    if (alreadyParticipated) return;
     localStorage.setItem('hasParticipated', 'true');  // 참여 기록 남김
     navigate('/info');
   };
@@ -54,9 +58,14 @@ export default function StartPage() {
 
         <button
           onClick={handleStart}
-          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-base font-semibold"
+          disabled={alreadyParticipated}
+          className={`mt-6 w-full py-3 rounded-lg text-base font-semibold ${
+            alreadyParticipated
+              ? 'bg-gray-300 cursor-not-allowed text-gray-600'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          }`}
         >
-          시작하기 / Start
+          {alreadyParticipated ? '이미 참여 완료됨 / Already participated' : '시작하기 / Start'}
         </button>
       </div>
     </div>
