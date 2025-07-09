@@ -7,6 +7,13 @@ export default function StartPage() {
   // 
 
   useEffect(() => {
+    // 이미 참여한 경우 홈 또는 안내 페이지로 리디렉션
+    if (localStorage.getItem('hasParticipated') === 'true') {
+      alert('이미 참여하셨습니다. 재참여는 제한됩니다. You have already participated. Re-participation is restricted.');
+      //navigate('/');  // 또는 안내용 '/already-participated'
+      return;
+    }
+
     // Knowledge 질문 미리 받아오기
     fetch('https://security-awareness-api.onrender.com/questions?section=Knowledge')
       .then(res => res.json())
@@ -17,9 +24,11 @@ export default function StartPage() {
       .catch(err => console.error('❌ Knowledge 질문 캐싱 실패:', err));
   }, []);
 
-    const handleStart = () => {
-      navigate('/info');
-    };
+  // 2. 시작 버튼 → 참여 상태 기록
+  const handleStart = () => {
+    localStorage.setItem('hasParticipated', 'true');  // 참여 기록 남김
+    navigate('/info');
+  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-4 bg-gray-50">
