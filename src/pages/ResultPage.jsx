@@ -219,27 +219,39 @@ export default function ResultPage() {
       sections.forEach(({ name, questions, answers }) => {
         answers?.forEach((ans, idx) => {
           const q = questions?.[idx];
-          if (!q || typeof ans !== 'number' || isNaN(ans)) return;
+          const choices = [q.choice1, q.choice2, q.choice3, q.choice4, q.choice5].filter(Boolean);
 
-          const selectedChoice = ans + 1; // 1~5
-
-          const item = {
-            participant_id: participantId,
-            section: name,
-            no: q.no || q.id || `Q-${idx + 1}`,
-            answer: selectedChoice,  // ✅ 정답이 아니라 응답 선택 번호
-            timestamp: new Date().toISOString()
-          };
-
-          if (typeof q.answer_index === 'number') {
-            item.answer_index = q.answer_index;
+          // O/X 문항인 경우 강제로 보기 구성
+          if (choices.length === 0 && q.type === 'O/X') {
+            choices.push('O', 'X');
           }
-          //console.log("🔍 개별 응답:", item);  
+
+          // 다양한 입력값을 인덱스로 변환
+          let choiceIndex = null;
+
+          if (typeof ans === 'number' && !isNaN(ans)) {
+            choiceIndex = ans;
+          } else if (typeof ans === 'string' && !isNaN(Number(ans))) {
+            choiceIndex = Number(ans);
+          } else if (typeof ans === 'boolean') {
+            choiceIndex = ans ? 1 : 0;
+          }
+
+          // 유효하지 않은 응답이면 로그 출력 후 저장 생략
+          if (choiceIndex === null || choiceIndex < 0 || choiceIndex >= choices.length) {
+            console.warn(`⚠️ 유효하지 않은 응답 - section=${name}, idx=${idx}, ans=${ans}, choices=${choices}`);
+            return;
+          }
+
+          // 선택한 보기 텍스트 추출
+          const selectedText = choices[choiceIndex];
+
+          // 응답 저장
           responses.push({
             participant_id: participantId,
             section: name,
             no: q.no || q.id || `Q-${idx + 1}`,
-            answer: Number(ans + 1),
+            answer: selectedText,  // ⬅️ 보기 텍스트 저장
             timestamp: new Date().toISOString(),
             ...(typeof q.answer_index === 'number' ? { answer_index: q.answer_index } : {})
           });
